@@ -1,0 +1,61 @@
+/* Configuración básica */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Encabezado con colores del ITT (Gris y Azul) */
+header {
+    background-color: #003366; /* Azul fuerte */
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Contenedor de productos (Responsivo) */
+.contenedor-productos {
+    display: flex;
+    flex-wrap: wrap; /* Esto hace que si no caben, se bajen al siguiente renglón */
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+}
+
+/* La Tarjeta */
+.tarjeta {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 300px; /* Tamaño fijo en PC */
+    overflow: hidden;
+}
+
+.tarjeta img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.info {
+    padding: 15px;
+}
+
+button {
+    background-color: #ff6600; /* Naranja llamativo */
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Accesibilidad: Contraste al pasar el ratón */
+button:hover {
+    background-color: #cc5200;
+}
