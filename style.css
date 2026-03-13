@@ -59,3 +59,16 @@ button {
 button:hover {
     background-color: #cc5200;
 }
+
+/* Accesibilidad */
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
