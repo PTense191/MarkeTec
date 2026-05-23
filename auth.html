@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MarkeTec — Acceder</title>
+  <link rel="stylesheet" href="marketec.css"/>
+  <style>
+    body { display:flex; flex-direction:column; min-height:100vh; }
+    .auth-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+    .auth-box { background:var(--white); border-radius:20px; padding:40px; max-width:440px; width:100%; box-shadow:var(--shadow-lg); border:1.5px solid var(--border); animation:fadeUp .4s ease both; }
+    .auth-logo { text-align:center; margin-bottom:24px; }
+    .auth-logo-text { font-family:'Fredoka One',cursive; font-size:2rem; background:linear-gradient(135deg,var(--red),var(--yellow),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .auth-title { font-family:'Fredoka One',cursive; font-size:1.6rem; color:var(--dark); margin-bottom:6px; text-align:center; }
+    .auth-sub { color:var(--muted); font-size:.88rem; text-align:center; margin-bottom:28px; font-weight:600; }
+    .auth-tabs { display:flex; border-bottom:2px solid var(--border); margin-bottom:24px; }
+    .auth-tab { flex:1; padding:10px; text-align:center; font-weight:800; font-size:.9rem; cursor:pointer; color:var(--muted); border-bottom:3px solid transparent; margin-bottom:-2px; background:none; border-top:none; border-left:none; border-right:none; font-family:'Nunito',sans-serif; transition:all .18s; }
+    .auth-tab.active { color:var(--dark); border-bottom-color:var(--dark); }
+    .auth-pane { display:none; }
+    .auth-pane.active { display:block; }
+    .demo-hint { background:var(--gray-bg); border-radius:10px; padding:12px 14px; margin-bottom:20px; font-size:.8rem; font-weight:700; color:var(--muted); }
+    .demo-hint strong { color:var(--dark); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <img src="marketec logo 1.png" class="logo-icon" alt="" onerror="this.style.display='none'">
+    <span class="logo-text">MARKETEC</span>
+  </a>
+  <ul class="nav-links"></ul>
+  <div class="nav-actions"></div>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-box">
+    <div class="auth-logo"><span class="auth-logo-text">MARKETEC</span></div>
+    <h2 class="auth-title" id="authTitle">Bienvenido</h2>
+    <p class="auth-sub">Emprendedores del Instituto Tecnológico de Tijuana</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="auth-tab" id="tabReg" onclick="switchTab('registro')">Crear cuenta</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="auth-pane active" id="paneLogin">
+      <div class="demo-hint">
+        <strong>Demo Admin:</strong> admin@marketec.mx / admin123<br>
+        <strong>Demo Vendedor:</strong> ana@tec.mx / 1234
+      </div>
+      <div class="form-group">
+        <label class="form-label">Correo electrónico</label>
+        <input class="form-input" id="loginEmail" type="email" placeholder="tu@correo.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input class="form-input" id="loginPass" type="password" placeholder="••••••••"/>
+      </div>
+      <div id="loginError" class="form-error" style="display:none;margin-bottom:12px"></div>
+      <button class="btn-solid" style="width:100%" onclick="hacerLogin()">Entrar</button>
+      <p style="text-align:center;margin-top:16px;font-size:.85rem;color:var(--muted);font-weight:600">¿No tienes cuenta? <a href="#" onclick="switchTab('registro')" style="color:var(--dark);font-weight:800">Regístrate</a></p>
+    </div>
+
+    <!-- REGISTRO -->
+    <div class="auth-pane" id="paneRegistro">
+      <div class="form-group">
+        <label class="form-label">Nombre completo</label>
+        <input class="form-input" id="regNombre" type="text" placeholder="Tu nombre"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Correo electrónico</label>
+        <input class="form-input" id="regEmail" type="email" placeholder="tu@tec.mx"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input class="form-input" id="regPass" type="password" placeholder="Mínimo 4 caracteres"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">¿Para qué quieres usar MarkeTec?</label>
+        <select class="form-select" id="regRol">
+          <option value="cliente">Explorar y comprar</option>
+          <option value="emprendedor">Registrar mi negocio</option>
+        </select>
+      </div>
+      <div id="regError" class="form-error" style="display:none;margin-bottom:12px"></div>
+      <button class="btn-solid" style="width:100%" onclick="hacerRegistro()">Crear cuenta</button>
+      <p style="text-align:center;margin-top:16px;font-size:.85rem;color:var(--muted);font-weight:600">¿Ya tienes cuenta? <a href="#" onclick="switchTab('login')" style="color:var(--dark);font-weight:800">Inicia sesión</a></p>
+    </div>
+  </div>
+</div>
+
+<script src="marketec.js"></script>
+<script>
+  // Redirect if already logged in
+  const ya = MT.Auth.current();
+  if (ya) window.location.href = ya.rol === 'admin' ? 'admin.html' : 'dashboard.html';
+
+  // Tab from URL param
+  const tab = new URLSearchParams(location.search).get('tab');
+  if (tab === 'registro') switchTab('registro');
+
+  function switchTab(t) {
+    document.getElementById('paneLogin').classList.toggle('active', t === 'login');
+    document.getElementById('paneRegistro').classList.toggle('active', t === 'registro');
+    document.getElementById('tabLogin').classList.toggle('active', t === 'login');
+    document.getElementById('tabReg').classList.toggle('active', t === 'registro');
+    document.getElementById('authTitle').textContent = t === 'login' ? 'Bienvenido' : 'Crear cuenta';
+  }
+
+  function hacerLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPass').value;
+    const err   = document.getElementById('loginError');
+    const user  = MT.Auth.login(email, pass);
+    if (!user) { err.textContent = 'Correo o contraseña incorrectos'; err.style.display = 'block'; return; }
+    err.style.display = 'none';
+    MT.Utils.toast('¡Bienvenido, ' + user.nombre.split(' ')[0] + '!');
+    setTimeout(() => {
+      window.location.href = user.rol === 'admin' ? 'admin.html' : (user.rol === 'emprendedor' ? 'dashboard.html' : 'index.html');
+    }, 800);
+  }
+
+  function hacerRegistro() {
+    const nombre = document.getElementById('regNombre').value.trim();
+    const email  = document.getElementById('regEmail').value.trim();
+    const pass   = document.getElementById('regPass').value;
+    const rol    = document.getElementById('regRol').value;
+    const err    = document.getElementById('regError');
+    if (!nombre || !email || !pass) { err.textContent = 'Completa todos los campos'; err.style.display = 'block'; return; }
+    if (pass.length < 4) { err.textContent = 'La contraseña debe tener al menos 4 caracteres'; err.style.display = 'block'; return; }
+    const result = MT.Auth.register({ nombre, email, password: pass, rol, avatar: '👤' });
+    if (result.error) { err.textContent = result.error; err.style.display = 'block'; return; }
+    MT.Auth.login(email, pass);
+    MT.Utils.toast('¡Cuenta creada!');
+    setTimeout(() => {
+      window.location.href = rol === 'emprendedor' ? 'registro.html' : 'index.html';
+    }, 800);
+  }
+
+  // Enter key
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') { hacerLogin(); hacerRegistro(); } });
+</script>
+</body>
+</html>

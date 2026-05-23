@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MarkeTec — Mi Panel</title>
+  <link rel="stylesheet" href="marketec.css"/>
+  <style>
+    body { display:flex; flex-direction:column; min-height:100vh; }
+    .dash-wrap { flex:1; max-width:960px; margin:0 auto; padding:32px 24px 60px; width:100%; }
+    .dash-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:12px; }
+    .dash-title  { font-family:'Fredoka One',cursive; font-size:1.8rem; color:var(--dark); }
+
+    /* Stats */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+    .stat-card { background:var(--white); border-radius:14px; padding:20px; border:1.5px solid var(--border); box-shadow:var(--shadow); text-align:center; }
+    .stat-num { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--dark); }
+    .stat-lbl { font-size:.8rem; font-weight:700; color:var(--muted); margin-top:4px; }
+
+    /* Status card */
+    .status-card { background:var(--white); border-radius:16px; padding:22px 24px; border:1.5px solid var(--border); box-shadow:var(--shadow); margin-bottom:24px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+    .status-emoji { font-size:3rem; }
+    .status-info  { flex:1; }
+    .status-name  { font-family:'Fredoka One',cursive; font-size:1.4rem; color:var(--dark); }
+    .status-type  { color:var(--muted); font-size:.88rem; font-weight:700; margin-bottom:8px; }
+    .status-actions { display:flex; gap:10px; flex-wrap:wrap; }
+
+    /* Toggle switch */
+    .toggle-wrap { display:flex; align-items:center; gap:10px; }
+    .toggle { position:relative; width:52px; height:28px; }
+    .toggle input { opacity:0; width:0; height:0; }
+    .slider { position:absolute; cursor:pointer; inset:0; background:#ccc; border-radius:28px; transition:.3s; }
+    .slider:before { content:''; position:absolute; height:20px; width:20px; left:4px; bottom:4px; background:white; border-radius:50%; transition:.3s; }
+    input:checked + .slider { background:var(--green); }
+    input:checked + .slider:before { transform:translateX(24px); }
+
+    /* Section */
+    .section { background:var(--white); border-radius:16px; border:1.5px solid var(--border); box-shadow:var(--shadow); margin-bottom:20px; }
+    .section-hdr { display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1.5px solid var(--border); cursor:pointer; }
+    .section-hdr-title { font-family:'Fredoka One',cursive; font-size:1.05rem; color:var(--dark); }
+    .section-body { padding:20px 22px; }
+
+    /* Menú */
+    .menu-row { display:flex; align-items:center; gap:10px; padding:10px; background:var(--gray-bg); border-radius:10px; margin-bottom:8px; }
+    .menu-row-info { flex:1; }
+    .menu-row-name { font-weight:800; font-size:.9rem; }
+    .menu-row-desc { font-size:.78rem; color:var(--muted); }
+    .menu-row-price{ font-weight:800; font-size:.9rem; color:var(--dark); }
+    .menu-row-del  { background:none; border:none; color:var(--red); cursor:pointer; font-size:1rem; }
+    .menu-add-row  { display:grid; grid-template-columns:1fr 90px auto; gap:8px; margin-top:10px; }
+
+    /* Galería */
+    .gal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px; margin-bottom:12px; }
+    .gal-item { position:relative; aspect-ratio:1; border-radius:10px; overflow:hidden; border:1.5px solid var(--border); background:var(--gray-bg); display:flex; align-items:center; justify-content:center; font-size:1.8rem; }
+    .gal-item img { width:100%; height:100%; object-fit:cover; }
+    .gal-del { position:absolute; top:4px; right:4px; background:rgba(0,0,0,.6); color:white; border:none; border-radius:50%; width:22px; height:22px; font-size:.75rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+    /* Pedidos */
+    .pedido-row { padding:12px; border-radius:10px; background:var(--gray-bg); margin-bottom:8px; }
+    .pedido-hdr { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+    .pedido-id  { font-weight:800; font-size:.85rem; }
+    .pedido-total { font-weight:800; color:var(--dark); }
+    .pedido-items { font-size:.8rem; color:var(--muted); font-weight:600; }
+
+    @media(max-width:700px) { .stats-row { grid-template-columns:1fr 1fr; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <img src="marketec logo 1.png" class="logo-icon" alt="" onerror="this.style.display='none'">
+    <span class="logo-text">MARKETEC</span>
+  </a>
+  <ul class="nav-links"><li><a href="index.html">Ver catálogo</a></li></ul>
+  <div class="nav-actions"></div>
+</nav>
+
+<div class="dash-wrap">
+  <div class="dash-header">
+    <div class="dash-title" id="dashTitle">Mi Panel</div>
+    <a href="registro.html" class="btn-solid btn-green" style="text-decoration:none" id="btnNuevoNeg">+ Registrar negocio</a>
+  </div>
+
+  <!-- Sin negocio -->
+  <div id="noNegocio" style="display:none" class="card">
+    <div class="card-body" style="text-align:center;padding:60px 20px">
+      <div style="font-size:3rem;margin-bottom:16px">🏪</div>
+      <p style="font-weight:800;font-size:1.1rem;margin-bottom:8px">Aún no tienes un negocio registrado</p>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:20px">Registra tu negocio y empieza a llegar a los estudiantes del Tec</p>
+      <a href="registro.html" class="btn-solid" style="text-decoration:none">Registrar mi negocio</a>
+    </div>
+  </div>
+
+  <!-- Con negocio -->
+  <div id="conNegocio" style="display:none">
+
+    <!-- Estado del negocio -->
+    <div class="status-card">
+      <div class="status-emoji" id="negEmoji">🏪</div>
+      <div class="status-info">
+        <div class="status-name" id="negNombre">Negocio</div>
+        <div class="status-type" id="negTipo">Tipo</div>
+        <div style="margin-bottom:4px" id="negEstadoBadge"></div>
+      </div>
+      <div class="status-actions">
+        <div class="toggle-wrap">
+          <span style="font-weight:700;font-size:.88rem">Disponible</span>
+          <label class="toggle">
+            <input type="checkbox" id="toggleDisp" onchange="toggleDisponible()"/>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <button class="btn-outline btn-sm" onclick="openEditModal()">✏️ Editar info</button>
+        <a id="btnVerNeg" href="#" class="btn-outline btn-sm" style="text-decoration:none">👁️ Ver página</a>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num" id="sRating">—</div><div class="stat-lbl">⭐ Calificación</div></div>
+      <div class="stat-card"><div class="stat-num" id="sResenas">0</div><div class="stat-lbl">Reseñas</div></div>
+      <div class="stat-card"><div class="stat-num" id="sMenu">0</div><div class="stat-lbl">Productos</div></div>
+      <div class="stat-card"><div class="stat-num" id="sPedidos">0</div><div class="stat-lbl">Pedidos</div></div>
+    </div>
+
+    <!-- Menú -->
+    <div class="section">
+      <div class="section-hdr" onclick="toggleSection('secMenu')">
+        <span class="section-hdr-title">🍽️ Menú</span>
+        <span id="secMenuArrow">▼</span>
+      </div>
+      <div class="section-body" id="secMenu" style="display:none">
+        <div id="menuList"></div>
+        <div class="menu-add-row">
+          <input class="form-input" id="mNombre" placeholder="Nombre del producto"/>
+          <input class="form-input" id="mPrecio" type="number" placeholder="$Precio"/>
+          <button class="btn-solid btn-sm" onclick="addMenuItem()">+</button>
+        </div>
+        <div style="margin-top:8px">
+          <input class="form-input" id="mDesc" placeholder="Descripción (opcional)"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Galería -->
+    <div class="section">
+      <div class="section-hdr" onclick="toggleSection('secGal')">
+        <span class="section-hdr-title">📷 Galería de fotos</span>
+        <span id="secGalArrow">▼</span>
+      </div>
+      <div class="section-body" id="secGal" style="display:none">
+        <div class="gal-grid" id="galGrid"></div>
+        <div style="display:flex;gap:8px">
+          <input class="form-input" id="galUrl" placeholder="https://... (URL de imagen)"/>
+          <button class="btn-solid btn-sm" onclick="addGaleria()">+ Agregar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Horario -->
+    <div class="section">
+      <div class="section-hdr" onclick="toggleSection('secHor')">
+        <span class="section-hdr-title">📅 Horario</span>
+        <span id="secHorArrow">▼</span>
+      </div>
+      <div class="section-body" id="secHor" style="display:none">
+        <div id="horarioEdit"></div>
+        <button class="btn-solid btn-sm" style="margin-top:12px" onclick="saveHorario()">Guardar horario</button>
+      </div>
+    </div>
+
+    <!-- Pedidos -->
+    <div class="section">
+      <div class="section-hdr" onclick="toggleSection('secPed')">
+        <span class="section-hdr-title">📋 Pedidos recientes</span>
+        <span id="secPedArrow">▼</span>
+      </div>
+      <div class="section-body" id="secPed" style="display:none">
+        <div id="pedidosList"></div>
+      </div>
+    </div>
+
+    <!-- Reseñas -->
+    <div class="section">
+      <div class="section-hdr" onclick="toggleSection('secRes')">
+        <span class="section-hdr-title">⭐ Reseñas</span>
+        <span id="secResArrow">▼</span>
+      </div>
+      <div class="section-body" id="secRes" style="display:none">
+        <div id="resenasList"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <div class="modal-title">✏️ Editar información</div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="eNombre"/></div>
+    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="eDesc"></textarea></div>
+    <div class="form-group"><label class="form-label">Dirección</label><input class="form-input" id="eDir"/></div>
+    <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="eTel"/></div>
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700">
+        <input type="checkbox" id="eEntregas" style="width:16px;height:16px;accent-color:var(--dark)"/> Hace entregas
+      </label>
+    </div>
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700">
+        <input type="checkbox" id="ePedidos" style="width:16px;height:16px;accent-color:var(--dark)"/> Acepta pedidos
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeEditModal()">Cancelar</button>
+      <button class="btn-solid" onclick="saveEdit()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script src="marketec.js"></script>
+<script>
+  const user = MT.Auth.current();
+  if (!user) { window.location.href = 'auth.html'; }
+
+  let negocio = null;
+  const DIAS = ['lun','mar','mie','jue','vie','sab','dom'];
+  const DIAS_L = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+
+  function init() {
+    document.getElementById('dashTitle').textContent = '👋 Hola, ' + user.nombre.split(' ')[0];
+    negocio = user.negocio_id ? MT.Negocios.getById(user.negocio_id) : null;
+    if (!negocio) {
+      document.getElementById('noNegocio').style.display = 'block';
+      document.getElementById('btnNuevoNeg').style.display = 'inline-flex';
+    } else {
+      document.getElementById('conNegocio').style.display = 'block';
+      document.getElementById('btnNuevoNeg').style.display = 'none';
+      renderNegocio();
+    }
+  }
+
+  function renderNegocio() {
+    const n = negocio;
+    document.getElementById('negEmoji').textContent = n.emoji;
+    document.getElementById('negNombre').textContent = n.nombre;
+    document.getElementById('negTipo').textContent = n.tipo + ' · ' + n.categoria;
+    document.getElementById('toggleDisp').checked = n.disponible;
+    document.getElementById('btnVerNeg').href = 'negocio.html?id=' + n.id;
+
+    const estadoMap = {
+      aprobado:  '<span class="badge badge-green">✓ Aprobado y publicado</span>',
+      pendiente: '<span class="badge badge-yellow">⏳ En revisión</span>',
+      rechazado: '<span class="badge badge-red">✕ Rechazado</span>',
+    };
+    document.getElementById('negEstadoBadge').innerHTML = estadoMap[n.estado] || '';
+
+    // Stats
+    const resenas = MT.Resenas.getByNegocio(n.id);
+    const pedidos = MT.Pedidos.getByNegocio(n.id);
+    document.getElementById('sRating').textContent  = n.calificacion || '—';
+    document.getElementById('sResenas').textContent = resenas.length;
+    document.getElementById('sMenu').textContent    = (n.menu||[]).length;
+    document.getElementById('sPedidos').textContent = pedidos.length;
+
+    renderMenu();
+    renderGaleria();
+    renderHorario();
+    renderPedidos();
+    renderResenas();
+  }
+
+  /* ── Toggle disponible ── */
+  function toggleDisponible() {
+    negocio = MT.Negocios.toggleDisponible(negocio.id);
+    MT.Utils.toast(negocio.disponible ? 'Marcado como disponible ✓' : 'Marcado como no disponible');
+  }
+
+  /* ── Sections ── */
+  function toggleSection(id) {
+    const el = document.getElementById(id);
+    const arrow = document.getElementById(id + 'Arrow');
+    const open = el.style.display === 'block';
+    el.style.display = open ? 'none' : 'block';
+    arrow.textContent = open ? '▼' : '▲';
+  }
+
+  /* ── Menú ── */
+  function renderMenu() {
+    const menu = negocio.menu || [];
+    document.getElementById('menuList').innerHTML = menu.length
+      ? menu.map(m => `
+          <div class="menu-row">
+            <div class="menu-row-info">
+              <div class="menu-row-name">${m.nombre}</div>
+              <div class="menu-row-desc">${m.descripcion||''}</div>
+            </div>
+            <span class="menu-row-price">$${m.precio}</span>
+            <button class="menu-row-del" onclick="delMenuItem('${m.id}')">✕</button>
+          </div>`)
+        .join('')
+      : '<p style="color:var(--muted);font-size:.88rem;font-weight:700">Sin productos. Agrega uno abajo.</p>';
+  }
+
+  function addMenuItem() {
+    const nombre = document.getElementById('mNombre').value.trim();
+    const precio = parseFloat(document.getElementById('mPrecio').value);
+    const desc   = document.getElementById('mDesc').value.trim();
+    if (!nombre || !precio) { MT.Utils.toast('Nombre y precio requeridos', 'error'); return; }
+    negocio = MT.Negocios.addMenuItem(negocio.id, { nombre, precio, descripcion: desc });
+    document.getElementById('mNombre').value = '';
+    document.getElementById('mPrecio').value = '';
+    document.getElementById('mDesc').value = '';
+    renderMenu();
+    document.getElementById('sMenu').textContent = (negocio.menu||[]).length;
+    MT.Utils.toast('Producto agregado');
+  }
+
+  function delMenuItem(mid) {
+    negocio = MT.Negocios.removeMenuItem(negocio.id, mid);
+    renderMenu();
+    document.getElementById('sMenu').textContent = (negocio.menu||[]).length;
+    MT.Utils.toast('Producto eliminado', 'info');
+  }
+
+  /* ── Galería ── */
+  function renderGaleria() {
+    const g = negocio.galeria || [];
+    document.getElementById('galGrid').innerHTML = (g.length
+      ? g.map(u => `
+          <div class="gal-item">
+            <img src="${u}" alt="" onerror="this.parentElement.innerHTML='📷'"/>
+            <button class="gal-del" onclick="delGaleria('${u}')">✕</button>
+          </div>`)
+      : [`<div style="color:var(--muted);font-size:.85rem;font-weight:700;grid-column:1/-1">Sin fotos aún. Agrega URLs de imágenes.</div>`]
+    ).join('');
+  }
+
+  function addGaleria() {
+    const url = document.getElementById('galUrl').value.trim();
+    if (!url) return;
+    negocio = MT.Negocios.addGaleria(negocio.id, url);
+    document.getElementById('galUrl').value = '';
+    renderGaleria();
+    MT.Utils.toast('Foto agregada');
+  }
+
+  function delGaleria(url) {
+    negocio = MT.Negocios.removeGaleria(negocio.id, url);
+    renderGaleria();
+  }
+
+  /* ── Horario ── */
+  function renderHorario() {
+    document.getElementById('horarioEdit').innerHTML = DIAS.map((d,i) => {
+      const h = negocio.horario?.[d] || 'Cerrado';
+      const cerrado = h === 'Cerrado';
+      const ini = cerrado ? '08:00' : h.split('–')[0];
+      const fin = cerrado ? '18:00' : h.split('–')[1];
+      return `
+        <div style="display:grid;grid-template-columns:90px 1fr 1fr;gap:8px;align-items:center;margin-bottom:8px">
+          <span style="font-weight:800;font-size:.88rem">${DIAS_L[i].slice(0,3)}</span>
+          <input class="form-input" id="hi-${d}" type="time" value="${ini}" ${cerrado?'disabled':''}/>
+          <input class="form-input" id="hf-${d}" type="time" value="${fin}" ${cerrado?'disabled':''}/>
+        </div>
+        <div style="margin-bottom:10px;padding-left:4px">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.85rem;font-weight:700">
+            <input type="checkbox" id="hc-${d}" ${cerrado?'checked':''} onchange="toggleHDia('${d}')"/> Cerrado
+          </label>
+        </div>`;
+    }).join('');
+  }
+
+  function toggleHDia(d) {
+    const c = document.getElementById('hc-' + d).checked;
+    document.getElementById('hi-' + d).disabled = c;
+    document.getElementById('hf-' + d).disabled = c;
+  }
+
+  function saveHorario() {
+    const h = {};
+    DIAS.forEach(d => {
+      h[d] = document.getElementById('hc-'+d).checked
+        ? 'Cerrado'
+        : document.getElementById('hi-'+d).value + '–' + document.getElementById('hf-'+d).value;
+    });
+    negocio = MT.Negocios.save({ ...negocio, horario: h });
+    MT.Utils.toast('Horario guardado ✓');
+  }
+
+  /* ── Pedidos ── */
+  function renderPedidos() {
+    const pedidos = MT.Pedidos.getByNegocio(negocio.id).reverse();
+    document.getElementById('pedidosList').innerHTML = pedidos.length
+      ? pedidos.map(p => `
+          <div class="pedido-row">
+            <div class="pedido-hdr">
+              <span class="pedido-id">Pedido #${p.id}</span>
+              <span class="badge ${p.estado==='pendiente'?'badge-yellow':'badge-green'}">${p.estado}</span>
+            </div>
+            <div class="pedido-items">${(p.items||[]).map(i=>i.nombre+'×'+i.cantidad).join(' · ')}</div>
+            <div class="pedido-total" style="margin-top:4px">Total: $${p.total}</div>
+          </div>`)
+        .join('')
+      : '<p style="color:var(--muted);font-size:.88rem;font-weight:700">Sin pedidos aún</p>';
+  }
+
+  /* ── Reseñas ── */
+  function renderResenas() {
+    const resenas = MT.Resenas.getByNegocio(negocio.id).reverse();
+    document.getElementById('resenasList').innerHTML = resenas.length
+      ? resenas.map(r => `
+          <div class="card" style="margin-bottom:10px">
+            <div class="card-body" style="padding:14px 16px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <strong style="font-size:.9rem">${r.usuario}</strong>
+                <span style="color:var(--muted);font-size:.78rem">${r.fecha}</span>
+              </div>
+              <div style="color:var(--yellow);margin-bottom:6px">${'★'.repeat(r.calificacion)}${'☆'.repeat(5-r.calificacion)}</div>
+              <p style="font-size:.88rem;color:var(--muted)">${r.comentario}</p>
+            </div>
+          </div>`)
+        .join('')
+      : '<p style="color:var(--muted);font-size:.88rem;font-weight:700">Sin reseñas aún</p>';
+  }
+
+  /* ── Modal Editar ── */
+  function openEditModal() {
+    document.getElementById('eNombre').value = negocio.nombre;
+    document.getElementById('eDesc').value   = negocio.descripcion;
+    document.getElementById('eDir').value    = negocio.direccion;
+    document.getElementById('eTel').value    = negocio.telefono;
+    document.getElementById('eEntregas').checked = negocio.hace_entregas;
+    document.getElementById('ePedidos').checked  = negocio.acepta_pedidos;
+    document.getElementById('editModal').classList.add('open');
+  }
+
+  function closeEditModal() { document.getElementById('editModal').classList.remove('open'); }
+
+  function saveEdit() {
+    negocio = MT.Negocios.save({
+      ...negocio,
+      nombre:        document.getElementById('eNombre').value.trim(),
+      descripcion:   document.getElementById('eDesc').value.trim(),
+      direccion:     document.getElementById('eDir').value.trim(),
+      telefono:      document.getElementById('eTel').value.trim(),
+      whatsapp:      '52' + document.getElementById('eTel').value.trim(),
+      hace_entregas: document.getElementById('eEntregas').checked,
+      acepta_pedidos:document.getElementById('ePedidos').checked,
+    });
+    closeEditModal();
+    renderNegocio();
+    MT.Utils.toast('Información actualizada ✓');
+  }
+
+  document.getElementById('editModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('editModal')) closeEditModal();
+  });
+
+  init();
+</script>
+</body>
+</html>

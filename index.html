@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MarkeTec — Emprendedores del ITT</title>
+  <link rel="stylesheet" href="marketec.css"/>
+  <style>
+    .hero {
+      background:linear-gradient(135deg,var(--dark) 0%,#2d2d50 100%);
+      color:white; padding:60px 40px; text-align:center; margin-bottom:0;
+    }
+    .hero-title { font-family:'Fredoka One',cursive; font-size:2.8rem; line-height:1.1; margin-bottom:12px; }
+    .hero-title span { background:linear-gradient(90deg,var(--yellow),var(--red)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .hero-sub { font-size:1.05rem; opacity:.8; margin-bottom:28px; }
+    .hero-search {
+      display:flex; max-width:520px; margin:0 auto; background:white;
+      border-radius:50px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3);
+    }
+    .hero-search input {
+      flex:1; padding:14px 22px; border:none; outline:none;
+      font-family:'Nunito',sans-serif; font-size:.95rem; color:var(--text);
+    }
+    .hero-search button {
+      background:var(--red); color:white; border:none; padding:14px 24px;
+      cursor:pointer; font-family:'Nunito',sans-serif; font-weight:800; font-size:.9rem;
+      transition:background .18s;
+    }
+    .hero-search button:hover { background:#c0251f; }
+
+    .page { display:flex; max-width:1400px; margin:0 auto; padding:28px 24px 60px; gap:24px; }
+
+    /* Sidebar */
+    .sidebar { width:210px; flex-shrink:0; }
+    .filter-card { background:var(--white); border-radius:14px; padding:20px 18px; box-shadow:var(--shadow); border:1.5px solid var(--border); }
+    .filter-title { font-weight:800; font-size:.88rem; margin-bottom:12px; margin-top:16px; }
+    .filter-title:first-child { margin-top:0; }
+    .filter-divider { border:none; border-top:1.5px solid var(--border); margin:12px 0 4px; }
+    .filter-check label { display:flex; align-items:flex-start; gap:8px; cursor:pointer; margin-bottom:8px; }
+    .filter-check input { accent-color:var(--dark); margin-top:2px; width:15px; height:15px; flex-shrink:0; }
+    .fc-label { font-weight:700; font-size:.85rem; }
+    .fc-desc  { font-size:.75rem; color:var(--muted); }
+
+    /* Main */
+    .main { flex:1; min-width:0; }
+    .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:16px; }
+    .toolbar-left { display:flex; align-items:center; gap:12px; }
+    .results-count { font-size:.88rem; color:var(--muted); font-weight:700; }
+    .sort-pills { display:flex; gap:8px; flex-wrap:wrap; }
+    .sort-pill {
+      display:flex; align-items:center; gap:5px; padding:7px 16px; border-radius:20px;
+      border:1.5px solid var(--border); background:var(--white);
+      font-family:'Nunito',sans-serif; font-weight:700; font-size:.82rem;
+      cursor:pointer; transition:all .18s; color:var(--text);
+    }
+    .sort-pill:hover { border-color:#999; }
+    .sort-pill.active { background:var(--dark); color:white; border-color:var(--dark); }
+
+    /* Grid */
+    .biz-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:20px; }
+    .biz-card {
+      background:var(--white); border-radius:16px; overflow:hidden;
+      border:1.5px solid var(--border); box-shadow:var(--shadow);
+      cursor:pointer; transition:transform .2s, box-shadow .2s;
+      animation:fadeUp .4s ease both;
+    }
+    .biz-card:hover { transform:translateY(-4px); box-shadow:0 8px 28px rgba(0,0,0,.14); }
+    .biz-thumb {
+      width:100%; aspect-ratio:1/.8;
+      display:flex; align-items:center; justify-content:center;
+      font-size:3.5rem; background:linear-gradient(135deg,#f7f7f7,#ebebeb);
+    }
+    .biz-info { padding:14px 16px 16px; }
+    .biz-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+    .biz-name { font-weight:800; font-size:.97rem; }
+    .biz-cat  { font-size:.75rem; color:var(--muted); font-weight:700; }
+    .biz-meta { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+    .biz-rating { font-size:.82rem; font-weight:700; color:var(--dark); }
+    .biz-rating .star { color:var(--yellow); }
+    .biz-status { font-size:.72rem; font-weight:800; padding:3px 9px; border-radius:20px; }
+    .status-open   { background:#dcf5e7; color:#1a9c47; }
+    .status-closed { background:#ffe5e5; color:#c0251f; }
+    .biz-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+    .biz-tag { background:var(--gray-bg); border-radius:6px; font-size:.7rem; font-weight:700; padding:2px 7px; color:var(--muted); }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+    .biz-card:nth-child(1){animation-delay:.05s}
+    .biz-card:nth-child(2){animation-delay:.10s}
+    .biz-card:nth-child(3){animation-delay:.15s}
+    .biz-card:nth-child(4){animation-delay:.20s}
+    .biz-card:nth-child(5){animation-delay:.25s}
+    .biz-card:nth-child(6){animation-delay:.30s}
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="index.html" class="logo">
+    <img src="marketec logo 1.png" class="logo-icon" alt="MarkeTec" onerror="this.style.display='none'">
+    <span class="logo-text">MARKETEC</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Explorar</a></li>
+    <li><a href="registro.html">Publicar negocio</a></li>
+    <li><a href="auth.html">Contáctanos</a></li>
+  </ul>
+  <div class="nav-actions"><!-- renderNav() lo llena --></div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <p style="font-size:.85rem;opacity:.6;margin-bottom:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase">Instituto Tecnológico de Tijuana</p>
+  <h1 class="hero-title">Descubre los <span>emprendedores</span> del Tec</h1>
+  <p class="hero-sub">Comida, servicios y más — todo hecho por tus compañeros</p>
+  <div class="hero-search">
+    <input id="heroSearch" type="text" placeholder="Buscar negocios, comida, servicios..."/>
+    <button onclick="applyHeroSearch()">Buscar</button>
+  </div>
+</div>
+
+<!-- CATEGORÍAS -->
+<div style="background:var(--white);border-bottom:1.5px solid var(--border);padding:14px 40px;">
+  <div class="cat-chips" id="catChips">
+    <button class="cat-chip active" data-cat="">🏪 Todos</button>
+    <button class="cat-chip" data-cat="Comida">🥗 Comida</button>
+    <button class="cat-chip" data-cat="Antojitos">🌮 Antojitos</button>
+    <button class="cat-chip" data-cat="Desayunos">☀️ Desayunos</button>
+    <button class="cat-chip" data-cat="Mariscos">🦞 Mariscos</button>
+    <button class="cat-chip" data-cat="Bebidas">🧃 Bebidas</button>
+    <button class="cat-chip" data-cat="Postres">🍰 Postres</button>
+    <button class="cat-chip" data-cat="Servicios">🛠️ Servicios</button>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="filter-card">
+      <div class="filter-title">Estado</div>
+      <div class="filter-check">
+        <label><input type="checkbox" id="fDisponible" checked/>
+          <div><div class="fc-label">Disponible ahora</div><div class="fc-desc">Solo abiertos</div></div>
+        </label>
+      </div>
+      <div class="filter-check">
+        <label><input type="checkbox" id="fEntregas"/>
+          <div><div class="fc-label">Hace entregas</div><div class="fc-desc">Lleva a domicilio</div></div>
+        </label>
+      </div>
+      <div class="filter-check">
+        <label><input type="checkbox" id="fPedidos"/>
+          <div><div class="fc-label">Acepta pedidos</div><div class="fc-desc">Aparta con anticipación</div></div>
+        </label>
+      </div>
+
+      <hr class="filter-divider"/>
+      <div class="filter-title">Calificación mínima</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:.8rem;font-weight:700">⭐ Mínimo</span>
+        <span id="ratingVal" style="font-size:.82rem;color:var(--muted);font-weight:700">4.0</span>
+      </div>
+      <input type="range" id="fRating" min="0" max="5" step="0.5" value="4" style="width:100%;accent-color:var(--dark)"/>
+
+      <hr class="filter-divider"/>
+      <button class="btn-outline" style="width:100%;margin-top:8px" onclick="resetFilters()">Limpiar filtros</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <span class="results-count" id="resultsCount">Cargando...</span>
+      </div>
+      <div class="sort-pills">
+        <button class="sort-pill active" data-sort="nuevo">✦ Nuevo</button>
+        <button class="sort-pill" data-sort="rating">⭐ Mejor calificado</button>
+        <button class="sort-pill" data-sort="nombre">A–Z</button>
+      </div>
+    </div>
+
+    <div class="biz-grid" id="bizGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="empty-icon">🔍</div>
+      <p>No encontramos negocios con esos filtros</p>
+      <button class="btn-outline" style="margin-top:14px" onclick="resetFilters()">Ver todos</button>
+    </div>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo-text">MARKETEC</div>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:8px;font-weight:600">Emprendedores del ITT</p>
+      <div class="social-icons">
+        <a href="#">✖</a><a href="#">📷</a><a href="#">▶</a><a href="#">💼</a>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>Explorar</h4>
+        <ul>
+          <li><a href="index.html">Catálogo</a></li>
+          <li><a href="registro.html">Publicar negocio</a></li>
+          <li><a href="auth.html">Iniciar sesión</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Categorías</h4>
+        <ul>
+          <li><a href="#" onclick="filterCat('Comida')">Comida</a></li>
+          <li><a href="#" onclick="filterCat('Antojitos')">Antojitos</a></li>
+          <li><a href="#" onclick="filterCat('Desayunos')">Desayunos</a></li>
+          <li><a href="#" onclick="filterCat('Mariscos')">Mariscos</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Soporte</h4>
+        <ul>
+          <li><a href="#">Preguntas frecuentes</a></li>
+          <li><a href="#">Reportar problema</a></li>
+          <li><a href="#">Términos de uso</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="marketec.js"></script>
+<script>
+  let currentCat  = '';
+  let currentSort = 'nuevo';
+  let searchQuery = '';
+
+  function getFilters() {
+    return {
+      disponible: document.getElementById('fDisponible').checked,
+      entregas:   document.getElementById('fEntregas').checked,
+      pedidos:    document.getElementById('fPedidos').checked,
+      rating:     parseFloat(document.getElementById('fRating').value),
+    };
+  }
+
+  function renderGrid() {
+    let negocios = MT.Negocios.getAprobados();
+
+    // Búsqueda
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      negocios = negocios.filter(n =>
+        n.nombre.toLowerCase().includes(q) ||
+        n.tipo.toLowerCase().includes(q) ||
+        n.descripcion.toLowerCase().includes(q) ||
+        (n.menu||[]).some(m => m.nombre.toLowerCase().includes(q))
+      );
+    }
+
+    // Categoría
+    if (currentCat) negocios = negocios.filter(n => n.categoria === currentCat);
+
+    // Filtros
+    const f = getFilters();
+    if (f.disponible) negocios = negocios.filter(n => n.disponible);
+    if (f.entregas)   negocios = negocios.filter(n => n.hace_entregas);
+    if (f.pedidos)    negocios = negocios.filter(n => n.acepta_pedidos);
+    negocios = negocios.filter(n => n.calificacion >= f.rating);
+
+    // Orden
+    if (currentSort === 'rating') negocios.sort((a,b) => b.calificacion - a.calificacion);
+    else if (currentSort === 'nombre') negocios.sort((a,b) => a.nombre.localeCompare(b.nombre));
+    else negocios.sort((a,b) => b.id - a.id);
+
+    const grid  = document.getElementById('bizGrid');
+    const empty = document.getElementById('emptyState');
+    const count = document.getElementById('resultsCount');
+
+    count.textContent = `${negocios.length} negocio${negocios.length !== 1 ? 's' : ''}`;
+
+    if (!negocios.length) {
+      grid.innerHTML = ''; empty.style.display = 'block'; return;
+    }
+    empty.style.display = 'none';
+
+    grid.innerHTML = negocios.map((n, i) => {
+      const abierto = n.disponible && MT.Utils.estaAbierto(n.horario);
+      const tags = [];
+      if (n.hace_entregas)   tags.push('🛵 Entregas');
+      if (n.acepta_pedidos)  tags.push('📋 Pedidos');
+
+      return `
+        <div class="biz-card" style="animation-delay:${i * 0.05}s" onclick="location.href='negocio.html?id=${n.id}'">
+          <div class="biz-thumb">${n.emoji}</div>
+          <div class="biz-info">
+            <div class="biz-top">
+              <div class="biz-name">${n.nombre}</div>
+              <span class="biz-status ${abierto ? 'status-open' : 'status-closed'}">${abierto ? 'Abierto' : 'Cerrado'}</span>
+            </div>
+            <div class="biz-cat">${n.tipo} · ${n.categoria}</div>
+            <div class="biz-meta">
+              <span class="biz-rating"><span class="star">★</span> ${n.calificacion} <span style="color:var(--muted);font-weight:600">(${n.total_resenas})</span></span>
+              <span style="font-size:.8rem;color:var(--muted);font-weight:700">desde $${Math.min(...n.menu.map(m=>m.precio))}</span>
+            </div>
+            ${tags.length ? `<div class="biz-tags">${tags.map(t=>`<span class="biz-tag">${t}</span>`).join('')}</div>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function filterCat(cat) {
+    currentCat = cat;
+    document.querySelectorAll('.cat-chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.cat === cat);
+    });
+    renderGrid();
+  }
+
+  function resetFilters() {
+    currentCat = ''; currentSort = 'nuevo'; searchQuery = '';
+    document.getElementById('heroSearch').value = '';
+    document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === ''));
+    document.querySelectorAll('.sort-pill').forEach(p => p.classList.toggle('active', p.dataset.sort === 'nuevo'));
+    document.getElementById('fDisponible').checked = false;
+    document.getElementById('fEntregas').checked = false;
+    document.getElementById('fPedidos').checked = false;
+    document.getElementById('fRating').value = 0;
+    document.getElementById('ratingVal').textContent = '0.0';
+    renderGrid();
+  }
+
+  function applyHeroSearch() {
+    searchQuery = document.getElementById('heroSearch').value.trim();
+    renderGrid();
+    document.querySelector('.page').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Eventos
+  document.querySelectorAll('.cat-chip').forEach(c => c.addEventListener('click', () => filterCat(c.dataset.cat)));
+  document.querySelectorAll('.sort-pill').forEach(p => p.addEventListener('click', () => {
+    currentSort = p.dataset.sort;
+    document.querySelectorAll('.sort-pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    renderGrid();
+  }));
+  document.getElementById('fRating').addEventListener('input', function() {
+    document.getElementById('ratingVal').textContent = parseFloat(this.value).toFixed(1);
+    renderGrid();
+  });
+  ['fDisponible','fEntregas','fPedidos'].forEach(id => {
+    document.getElementById(id).addEventListener('change', renderGrid);
+  });
+  document.getElementById('heroSearch').addEventListener('keydown', e => { if(e.key==='Enter') applyHeroSearch(); });
+
+  renderGrid();
+</script>
+</body>
+</html>

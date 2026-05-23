@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MarkeTec — Negocio</title>
+  <link rel="stylesheet" href="marketec.css"/>
+  <style>
+    /* HERO */
+    .biz-hero {
+      background:linear-gradient(135deg,var(--dark) 0%,#2d2d50 100%);
+      color:white; padding:40px; display:flex; align-items:center; gap:32px;
+    }
+    .biz-hero-emoji { font-size:5rem; flex-shrink:0; }
+    .biz-hero-info { flex:1; }
+    .biz-hero-title { font-family:'Fredoka One',cursive; font-size:2.4rem; line-height:1.1; margin-bottom:8px; }
+    .biz-hero-type  { opacity:.7; font-size:.95rem; font-weight:700; margin-bottom:14px; }
+    .biz-hero-meta  { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+    .biz-status-badge { font-size:.88rem; font-weight:800; padding:6px 16px; border-radius:20px; }
+    .status-open-badge   { background:#25d366; color:white; }
+    .status-closed-badge { background:#e63030; color:white; }
+    .biz-rating-hero { font-size:1.1rem; font-weight:800; }
+    .biz-rating-hero .star { color:var(--yellow); }
+
+    /* CONTENT */
+    .content-wrap { max-width:1100px; margin:0 auto; padding:28px 24px 60px; display:flex; gap:28px; }
+    .content-main { flex:1; min-width:0; }
+
+    /* INFO CARDS */
+    .info-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+    .info-card { background:var(--white); border-radius:14px; padding:18px 20px; border:1.5px solid var(--border); box-shadow:var(--shadow); }
+    .info-card-icon  { font-size:1.4rem; margin-bottom:8px; }
+    .info-card-label { font-size:.72rem; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:.8px; margin-bottom:4px; }
+    .info-card-value { font-weight:800; font-size:.9rem; color:var(--dark); }
+    .info-card-value a { color:var(--dark); text-decoration:none; }
+    .info-card-value a:hover { color:var(--red); }
+
+    /* TABS */
+    .tabs { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:24px; }
+    .tab-btn {
+      padding:12px 22px; border:none; background:none; cursor:pointer;
+      font-family:'Nunito',sans-serif; font-weight:700; font-size:.9rem;
+      color:var(--muted); border-bottom:3px solid transparent; margin-bottom:-2px;
+      transition:all .18s;
+    }
+    .tab-btn.active { color:var(--dark); border-bottom-color:var(--dark); }
+
+    /* MENU */
+    .menu-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
+    .menu-item {
+      background:var(--white); border-radius:14px; padding:18px 18px;
+      border:1.5px solid var(--border); box-shadow:var(--shadow);
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .menu-item-name  { font-weight:800; font-size:.95rem; }
+    .menu-item-desc  { font-size:.82rem; color:var(--muted); flex:1; }
+    .menu-item-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
+    .menu-item-price { font-weight:900; font-size:1.05rem; color:var(--dark); }
+    .btn-add-cart {
+      background:var(--dark); color:white; border:none; border-radius:8px;
+      padding:6px 14px; font-family:'Nunito',sans-serif; font-weight:800; font-size:.82rem;
+      cursor:pointer; transition:background .18s;
+    }
+    .btn-add-cart:hover { background:var(--red); }
+    .btn-add-cart.disabled { background:#ccc; cursor:not-allowed; }
+
+    /* GALLERY */
+    .gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
+    .gallery-item {
+      aspect-ratio:1; border-radius:12px; overflow:hidden;
+      background:linear-gradient(135deg,#f0f0f0,#e0e0e0);
+      display:flex; align-items:center; justify-content:center; font-size:2.5rem;
+      border:1.5px solid var(--border);
+    }
+    .gallery-item img { width:100%; height:100%; object-fit:cover; }
+
+    /* SCHEDULE */
+    .schedule-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+    .day-col { background:var(--gray-bg); border-radius:12px; padding:14px 8px; text-align:center; border:1.5px solid var(--border); }
+    .day-col.today { background:var(--dark); color:white; border-color:var(--dark); }
+    .day-col.closed { opacity:.5; }
+    .day-name  { font-weight:800; font-size:.78rem; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+    .day-hours { font-size:.78rem; font-weight:700; line-height:1.4; }
+
+    /* REVIEWS */
+    .review-form { background:var(--white); border-radius:16px; padding:24px; border:1.5px solid var(--border); box-shadow:var(--shadow); margin-bottom:24px; }
+    .stars-input { display:flex; gap:6px; margin-bottom:14px; }
+    .star-btn { background:none; border:none; font-size:1.6rem; cursor:pointer; color:#ddd; transition:color .15s; }
+    .star-btn.active, .star-btn:hover { color:var(--yellow); }
+    .review-card { background:var(--white); border-radius:14px; padding:18px 20px; border:1.5px solid var(--border); box-shadow:var(--shadow); margin-bottom:12px; }
+    .review-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+    .review-user  { font-weight:800; font-size:.88rem; }
+    .review-date  { font-size:.78rem; color:var(--muted); font-weight:600; }
+    .review-stars { color:var(--yellow); font-size:.92rem; margin-bottom:6px; }
+    .review-text  { font-size:.88rem; color:var(--text); line-height:1.55; }
+
+    /* CART SIDEBAR */
+    .cart-sidebar {
+      width:280px; flex-shrink:0;
+      background:var(--white); border-radius:16px; padding:22px;
+      border:1.5px solid var(--border); box-shadow:var(--shadow);
+      position:sticky; top:88px; align-self:flex-start;
+    }
+    .cart-title { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--dark); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
+    .cart-count { background:var(--red); color:white; font-size:.72rem; font-weight:800; padding:2px 8px; border-radius:20px; }
+    .cart-empty { text-align:center; padding:30px 10px; color:var(--muted); font-size:.88rem; font-weight:700; }
+    .cart-items { margin-bottom:14px; }
+    .cart-item  { display:flex; align-items:center; gap:8px; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+    .cart-item:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .cart-item-name  { flex:1; font-weight:700; font-size:.85rem; }
+    .cart-item-price { font-weight:800; font-size:.85rem; color:var(--dark); }
+    .qty-ctrl { display:flex; align-items:center; gap:4px; }
+    .qty-btn { background:var(--gray-bg); border:1px solid var(--border); width:22px; height:22px; border-radius:6px; cursor:pointer; font-size:.9rem; display:flex; align-items:center; justify-content:center; font-weight:800; transition:background .15s; }
+    .qty-btn:hover { background:var(--border); }
+    .qty-num { font-weight:800; font-size:.85rem; min-width:18px; text-align:center; }
+    .cart-total { display:flex; justify-content:space-between; font-weight:800; font-size:.95rem; padding-top:10px; border-top:2px solid var(--border); margin-bottom:14px; }
+    .cart-no-pedidos { font-size:.8rem; color:var(--muted); text-align:center; margin-top:8px; }
+
+    /* BREADCRUMB */
+    .breadcrumb { max-width:1100px; margin:20px auto 0; padding:0 24px; font-size:.85rem; color:var(--muted); font-weight:600; }
+    .breadcrumb a { color:var(--muted); text-decoration:none; } .breadcrumb a:hover { color:var(--text); }
+
+    @media(max-width:900px) {
+      .info-row { grid-template-columns:1fr 1fr; }
+      .content-wrap { flex-direction:column; }
+      .cart-sidebar { width:100%; position:static; }
+      .schedule-grid { grid-template-columns:repeat(4,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="marketec logo 1.png" class="logo-icon" alt="MarkeTec" onerror="this.style.display='none'">
+    <span class="logo-text">MARKETEC</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">← Catálogo</a></li>
+  </ul>
+  <div class="nav-actions"></div>
+</nav>
+
+<div id="loading" style="text-align:center;padding:80px 20px;font-weight:700;color:var(--muted)">Cargando negocio...</div>
+
+<div id="pageContent" style="display:none">
+  <!-- HERO -->
+  <div class="biz-hero">
+    <div class="biz-hero-emoji" id="heroEmoji">🏪</div>
+    <div class="biz-hero-info">
+      <div id="heroBadge"></div>
+      <h1 class="biz-hero-title" id="heroTitle">Negocio</h1>
+      <div class="biz-hero-type" id="heroType">Tipo</div>
+      <div class="biz-hero-meta">
+        <span class="biz-status-badge" id="heroStatus">—</span>
+        <span class="biz-rating-hero"><span class="star">★</span> <span id="heroRating">—</span> (<span id="heroReviews">0</span> reseñas)</span>
+        <span style="opacity:.7;font-size:.88rem;font-weight:700" id="heroAddr">—</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;align-self:flex-start;margin-top:8px">
+      <a id="btnWhatsapp" href="#" class="btn-whatsapp">💬 WhatsApp</a>
+      <a id="btnCall" href="#" class="btn-outline" style="color:white;border-color:rgba(255,255,255,.4);text-decoration:none;display:flex;align-items:center;gap:8px;padding:11px 20px;font-weight:800;font-size:.9rem;border-radius:10px">📞 Llamar</a>
+    </div>
+  </div>
+
+  <div class="breadcrumb">
+    <a href="index.html">Inicio</a> <span>›</span> <span id="bcName">Negocio</span>
+  </div>
+
+  <div class="content-wrap">
+    <!-- MAIN -->
+    <div class="content-main">
+      <!-- INFO CARDS -->
+      <div class="info-row">
+        <div class="info-card">
+          <div class="info-card-icon">📍</div>
+          <div class="info-card-label">Dirección</div>
+          <div class="info-card-value" id="infoAddr">—</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">📞</div>
+          <div class="info-card-label">Teléfono</div>
+          <div class="info-card-value" id="infoPhone">—</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">🕐</div>
+          <div class="info-card-label">Horario hoy</div>
+          <div class="info-card-value" id="infoHorario">—</div>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="menu">🍽️ Menú</button>
+        <button class="tab-btn" data-tab="galeria">📷 Galería</button>
+        <button class="tab-btn" data-tab="horario">📅 Horario</button>
+        <button class="tab-btn" data-tab="resenas">⭐ Reseñas</button>
+      </div>
+
+      <!-- MENU -->
+      <div id="tab-menu" class="tab-pane active">
+        <div class="menu-grid" id="menuGrid"></div>
+      </div>
+
+      <!-- GALERÍA -->
+      <div id="tab-galeria" class="tab-pane">
+        <div class="gallery-grid" id="galeriaGrid"></div>
+        <div id="galeriaEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">📷</div>
+          <p>Este negocio aún no tiene fotos</p>
+        </div>
+      </div>
+
+      <!-- HORARIO -->
+      <div id="tab-horario" class="tab-pane">
+        <div class="schedule-grid" id="scheduleGrid"></div>
+      </div>
+
+      <!-- RESEÑAS -->
+      <div id="tab-resenas" class="tab-pane">
+        <div class="review-form" id="reviewForm">
+          <div class="section-title" style="margin-bottom:14px">Dejar una reseña</div>
+          <div class="stars-input" id="starsInput">
+            <button class="star-btn" data-v="1">★</button>
+            <button class="star-btn" data-v="2">★</button>
+            <button class="star-btn" data-v="3">★</button>
+            <button class="star-btn" data-v="4">★</button>
+            <button class="star-btn" data-v="5">★</button>
+          </div>
+          <div class="form-group">
+            <input class="form-input" id="reviewNombre" placeholder="Tu nombre o apodo"/>
+          </div>
+          <div class="form-group">
+            <textarea class="form-textarea" id="reviewTexto" placeholder="¿Qué tal estuvo?" style="min-height:70px"></textarea>
+          </div>
+          <button class="btn-solid" onclick="enviarResena()">Publicar reseña</button>
+        </div>
+        <div id="resenasContainer"></div>
+        <div id="resenasEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">⭐</div>
+          <p>Sé el primero en dejar una reseña</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CART SIDEBAR -->
+    <aside class="cart-sidebar" id="cartSidebar">
+      <div class="cart-title">
+        🛒 Mi orden
+        <span class="cart-count" id="cartCount">0</span>
+      </div>
+      <div id="cartBody">
+        <div class="cart-empty" id="cartEmpty">Agrega platillos del menú</div>
+        <div class="cart-items" id="cartItems" style="display:none"></div>
+        <div class="cart-total" id="cartTotal" style="display:none">
+          <span>Total</span><span id="cartTotalVal">$0</span>
+        </div>
+        <button id="btnPedido" class="btn-solid btn-green" style="width:100%;display:none" onclick="enviarPedido()">Enviar pedido por WhatsApp</button>
+        <div class="cart-no-pedidos" id="cartNoPedidos" style="display:none">Este negocio no acepta pedidos online</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script src="marketec.js"></script>
+<script>
+  let negocio = null;
+  let selectedStars = 0;
+
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Stars input
+  document.querySelectorAll('.star-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedStars = parseInt(btn.dataset.v);
+      document.querySelectorAll('.star-btn').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.v) <= selectedStars);
+      });
+    });
+  });
+
+  // Load
+  const id = new URLSearchParams(location.search).get('id');
+  setTimeout(() => {
+    negocio = MT.Negocios.getById(id);
+    if (!negocio) {
+      document.getElementById('loading').innerHTML = '<p style="color:var(--red);font-weight:800">Negocio no encontrado.</p><a href="index.html" style="color:var(--muted)">← Volver</a>';
+      return;
+    }
+    render();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('pageContent').style.display = 'block';
+  }, 300);
+
+  function render() {
+    const n = negocio;
+    const abierto = n.disponible && MT.Utils.estaAbierto(n.horario);
+
+    document.title = `MarkeTec — ${n.nombre}`;
+    document.getElementById('bcName').textContent = n.nombre;
+    document.getElementById('heroEmoji').textContent = n.emoji;
+    document.getElementById('heroTitle').textContent = n.nombre;
+    document.getElementById('heroType').textContent = n.tipo + ' · ' + n.categoria;
+    document.getElementById('heroAddr').textContent = '📍 ' + n.direccion;
+    document.getElementById('heroRating').textContent = n.calificacion;
+    document.getElementById('heroReviews').textContent = n.total_resenas;
+    document.getElementById('heroStatus').textContent = abierto ? '🟢 Abierto ahora' : '🔴 Cerrado';
+    document.getElementById('heroStatus').className = 'biz-status-badge ' + (abierto ? 'status-open-badge' : 'status-closed-badge');
+    document.getElementById('btnWhatsapp').href = `https://wa.me/${n.whatsapp}?text=Hola, vi tu negocio en MarkeTec`;
+    document.getElementById('btnCall').href = `tel:${n.telefono}`;
+    document.getElementById('infoAddr').textContent = n.direccion;
+    document.getElementById('infoPhone').innerHTML = `<a href="tel:${n.telefono}">${n.telefono}</a>`;
+    const hoy = MT.Utils.horarioHoy(n.horario);
+    document.getElementById('infoHorario').textContent = hoy === 'Cerrado' ? '🔴 Cerrado hoy' : `🟢 ${hoy}`;
+
+    renderMenu();
+    renderGaleria();
+    renderHorario();
+    renderResenas();
+    renderCart();
+
+    // Cart visibility
+    if (!n.acepta_pedidos && !n.hace_entregas) {
+      document.getElementById('cartSidebar').style.display = 'none';
+    }
+  }
+
+  function renderMenu() {
+    const n = negocio;
+    const grid = document.getElementById('menuGrid');
+    if (!n.menu || !n.menu.length) {
+      grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🍽️</div><p>Menú no disponible aún</p></div>';
+      return;
+    }
+    const puedeAgregar = n.acepta_pedidos || n.hace_entregas;
+    grid.innerHTML = n.menu.map(m => `
+      <div class="menu-item">
+        <div class="menu-item-name">${m.nombre}</div>
+        <div class="menu-item-desc">${m.descripcion}</div>
+        <div class="menu-item-footer">
+          <span class="menu-item-price">$${m.precio}</span>
+          ${puedeAgregar
+            ? `<button class="btn-add-cart" onclick="addToCart('${m.id}','${m.nombre.replace(/'/g,"\\'")}',${m.precio})">+ Agregar</button>`
+            : ''
+          }
+        </div>
+      </div>`).join('');
+  }
+
+  function renderGaleria() {
+    const g = negocio.galeria || [];
+    const grid = document.getElementById('galeriaGrid');
+    const empty = document.getElementById('galeriaEmpty');
+    if (!g.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    grid.innerHTML = g.map(url => `
+      <div class="gallery-item">
+        <img src="${url}" alt="Foto" onerror="this.parentElement.innerHTML='📷'"/>
+      </div>`).join('');
+  }
+
+  function renderHorario() {
+    const dias = [
+      {k:'lun',l:'Lun'},{k:'mar',l:'Mar'},{k:'mie',l:'Mié'},
+      {k:'jue',l:'Jue'},{k:'vie',l:'Vie'},{k:'sab',l:'Sáb'},{k:'dom',l:'Dom'}
+    ];
+    const hoyKey = ['dom','lun','mar','mie','jue','vie','sab'][new Date().getDay()];
+    document.getElementById('scheduleGrid').innerHTML = dias.map(d => {
+      const h = negocio.horario[d.k];
+      return `<div class="day-col ${d.k===hoyKey?'today':''} ${h==='Cerrado'?'closed':''}">
+        <div class="day-name">${d.l}</div>
+        <div class="day-hours">${(h||'Cerrado').replace('–','<br>')}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderResenas() {
+    const resenas = MT.Resenas.getByNegocio(negocio.id);
+    const container = document.getElementById('resenasContainer');
+    const empty = document.getElementById('resenasEmpty');
+    if (!resenas.length) { container.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    container.innerHTML = resenas.slice().reverse().map(r => `
+      <div class="review-card">
+        <div class="review-header">
+          <span class="review-user">${r.usuario}</span>
+          <span class="review-date">${r.fecha}</span>
+        </div>
+        <div class="review-stars">${'★'.repeat(r.calificacion)}${'☆'.repeat(5-r.calificacion)}</div>
+        <div class="review-text">${r.comentario}</div>
+      </div>`).join('');
+  }
+
+  function enviarResena() {
+    const nombre = document.getElementById('reviewNombre').value.trim();
+    const texto  = document.getElementById('reviewTexto').value.trim();
+    if (!selectedStars) { MT.Utils.toast('Selecciona una calificación', 'error'); return; }
+    if (!nombre)        { MT.Utils.toast('Escribe tu nombre', 'error'); return; }
+    if (!texto)         { MT.Utils.toast('Escribe un comentario', 'error'); return; }
+    MT.Resenas.add({ negocio_id: negocio.id, usuario: nombre, calificacion: selectedStars, comentario: texto });
+    negocio = MT.Negocios.getById(negocio.id);
+    document.getElementById('reviewNombre').value = '';
+    document.getElementById('reviewTexto').value  = '';
+    selectedStars = 0;
+    document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('heroRating').textContent  = negocio.calificacion;
+    document.getElementById('heroReviews').textContent = negocio.total_resenas;
+    renderResenas();
+    MT.Utils.toast('¡Reseña publicada!');
+  }
+
+  /* CARRITO */
+  function addToCart(mid, nombre, precio) {
+    MT.Carrito.add({ id: mid, negocio_id: negocio.id, nombre, precio });
+    renderCart();
+    MT.Utils.toast(`${nombre} agregado`);
+  }
+
+  function renderCart() {
+    const items = MT.Carrito.get().filter(x => x.negocio_id === parseInt(negocio.id));
+    const count = items.reduce((s,x) => s+x.cantidad, 0);
+    const total = items.reduce((s,x) => s+x.precio*x.cantidad, 0);
+    document.getElementById('cartCount').textContent = count;
+    const cartEmpty = document.getElementById('cartEmpty');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const btnPedido = document.getElementById('btnPedido');
+    const noPedidos = document.getElementById('cartNoPedidos');
+
+    if (!items.length) {
+      cartEmpty.style.display = 'block';
+      cartItems.style.display = 'none';
+      cartTotal.style.display = 'none';
+      btnPedido.style.display = 'none';
+      noPedidos.style.display = 'none';
+      return;
+    }
+    cartEmpty.style.display = 'none';
+    cartItems.style.display = 'block';
+    cartTotal.style.display = 'flex';
+    document.getElementById('cartTotalVal').textContent = '$' + total;
+
+    if (negocio.acepta_pedidos || negocio.hace_entregas) {
+      btnPedido.style.display = 'block';
+      noPedidos.style.display = 'none';
+    } else {
+      btnPedido.style.display = 'none';
+      noPedidos.style.display = 'block';
+    }
+
+    cartItems.innerHTML = items.map(i => `
+      <div class="cart-item">
+        <span class="cart-item-name">${i.nombre}</span>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty('${i.id}',${i.cantidad-1})">−</button>
+          <span class="qty-num">${i.cantidad}</span>
+          <button class="qty-btn" onclick="changeQty('${i.id}',${i.cantidad+1})">+</button>
+        </div>
+        <span class="cart-item-price">$${i.precio * i.cantidad}</span>
+      </div>`).join('');
+  }
+
+  function changeQty(mid, qty) {
+    MT.Carrito.updateQty(mid, parseInt(negocio.id), qty);
+    renderCart();
+  }
+
+  function enviarPedido() {
+    const items = MT.Carrito.get().filter(x => x.negocio_id === parseInt(negocio.id));
+    if (!items.length) return;
+    const lineas = items.map(i => `• ${i.nombre} x${i.cantidad} = $${i.precio*i.cantidad}`).join('\n');
+    const total  = items.reduce((s,x) => s+x.precio*x.cantidad, 0);
+    const msg    = `Hola, quiero hacer un pedido desde MarkeTec:\n\n${lineas}\n\n*Total: $${total}*`;
+    MT.Pedidos.add({ negocio_id: negocio.id, items, total });
+    MT.Carrito.clear(parseInt(negocio.id));
+    renderCart();
+    window.open(`https://wa.me/${negocio.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+    MT.Utils.toast('¡Pedido enviado por WhatsApp!');
+  }
+</script>
+</body>
+</html>

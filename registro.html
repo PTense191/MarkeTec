@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MarkeTec — Registrar negocio</title>
+  <link rel="stylesheet" href="marketec.css"/>
+  <style>
+    body { display:flex; flex-direction:column; min-height:100vh; }
+    .reg-wrap { flex:1; max-width:680px; margin:40px auto; padding:0 24px 60px; width:100%; }
+    .reg-header { text-align:center; margin-bottom:36px; }
+    .reg-title  { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--dark); margin-bottom:8px; }
+    .reg-sub    { color:var(--muted); font-size:.95rem; font-weight:600; }
+
+    /* Steps */
+    .steps { display:flex; justify-content:center; gap:0; margin-bottom:36px; position:relative; }
+    .steps::before { content:''; position:absolute; top:18px; left:10%; right:10%; height:2px; background:var(--border); z-index:0; }
+    .step { display:flex; flex-direction:column; align-items:center; gap:6px; position:relative; z-index:1; flex:1; }
+    .step-num { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; border:2px solid var(--border); background:var(--white); color:var(--muted); transition:all .25s; }
+    .step.active .step-num  { background:var(--dark); color:white; border-color:var(--dark); }
+    .step.done   .step-num  { background:var(--green); color:white; border-color:var(--green); }
+    .step-label { font-size:.75rem; font-weight:800; color:var(--muted); text-align:center; }
+    .step.active .step-label { color:var(--dark); }
+
+    /* Card */
+    .step-card { background:var(--white); border-radius:20px; padding:36px; border:1.5px solid var(--border); box-shadow:var(--shadow-lg); animation:fadeUp .35s ease both; }
+    .step-card-title { font-family:'Fredoka One',cursive; font-size:1.4rem; color:var(--dark); margin-bottom:4px; }
+    .step-card-sub   { color:var(--muted); font-size:.88rem; font-weight:600; margin-bottom:24px; }
+
+    /* Horario */
+    .horario-grid { display:grid; gap:8px; }
+    .horario-row  { display:grid; grid-template-columns:80px 1fr 1fr; gap:10px; align-items:center; }
+    .horario-dia  { font-weight:800; font-size:.88rem; }
+    .horario-cerrado { display:flex; align-items:center; gap:6px; grid-column:2/4; font-size:.85rem; font-weight:700; cursor:pointer; }
+
+    /* Menu builder */
+    .menu-list { margin-bottom:16px; }
+    .menu-row  { display:flex; align-items:center; gap:10px; margin-bottom:8px; background:var(--gray-bg); padding:10px 12px; border-radius:10px; }
+    .menu-row-name  { flex:1; font-weight:700; font-size:.88rem; }
+    .menu-row-price { font-weight:800; font-size:.88rem; color:var(--dark); }
+    .menu-row-del   { background:none; border:none; color:var(--red); cursor:pointer; font-size:1.1rem; }
+    .menu-add-form  { display:grid; grid-template-columns:1fr 90px; gap:8px; margin-bottom:8px; }
+    .menu-desc-row  { margin-bottom:8px; }
+
+    /* Nav buttons */
+    .step-nav { display:flex; justify-content:space-between; margin-top:28px; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <img src="marketec logo 1.png" class="logo-icon" alt="" onerror="this.style.display='none'">
+    <span class="logo-text">MARKETEC</span>
+  </a>
+  <ul class="nav-links"><li><a href="index.html">← Inicio</a></li></ul>
+  <div class="nav-actions"></div>
+</nav>
+
+<div class="reg-wrap">
+  <div class="reg-header">
+    <h1 class="reg-title">Publica tu negocio</h1>
+    <p class="reg-sub">Llega a todos los estudiantes del Instituto Tecnológico de Tijuana</p>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps" id="stepsBar">
+    <div class="step active" id="step-ind-1"><div class="step-num">1</div><div class="step-label">Información</div></div>
+    <div class="step"        id="step-ind-2"><div class="step-num">2</div><div class="step-label">Horario</div></div>
+    <div class="step"        id="step-ind-3"><div class="step-num">3</div><div class="step-label">Menú y fotos</div></div>
+    <div class="step"        id="step-ind-4"><div class="step-num">4</div><div class="step-label">Cuenta</div></div>
+  </div>
+
+  <!-- STEP 1: Información básica -->
+  <div class="step-card" id="pane1">
+    <div class="step-card-title">📋 Información básica</div>
+    <div class="step-card-sub">Cuéntanos sobre tu negocio</div>
+    <div class="form-group">
+      <label class="form-label">Nombre del negocio *</label>
+      <input class="form-input" id="s1Nombre" placeholder="Ej. Tacos El Tec"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Categoría *</label>
+      <select class="form-select" id="s1Cat">
+        <option value="">Selecciona...</option>
+        <option>Comida</option><option>Antojitos</option><option>Desayunos</option>
+        <option>Mariscos</option><option>Bebidas</option><option>Postres</option><option>Servicios</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo de negocio *</label>
+      <input class="form-input" id="s1Tipo" placeholder="Ej. Comida rápida, Repostería, Servicios TI..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descripción *</label>
+      <textarea class="form-textarea" id="s1Desc" placeholder="Describe qué ofreces, qué te hace especial..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Emoji representativo</label>
+      <input class="form-input" id="s1Emoji" placeholder="🌮" maxlength="2" style="font-size:1.5rem;width:80px"/>
+      <div class="form-hint">Elige un emoji que represente tu negocio</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Dirección / Ubicación</label>
+      <input class="form-input" id="s1Dir" placeholder="Ej. Campus ITT, junto a cafetería"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Teléfono / WhatsApp *</label>
+      <input class="form-input" id="s1Tel" type="tel" placeholder="664XXXXXXX"/>
+      <div class="form-hint">10 dígitos sin espacios ni guiones</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">¿Tu negocio hace entregas?</label>
+      <div style="display:flex;gap:20px;margin-top:6px">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:700">
+          <input type="radio" name="entregas" value="si"/> Sí, hago entregas
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:700">
+          <input type="radio" name="entregas" value="no" checked/> Solo en persona
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700">
+        <input type="checkbox" id="s1Pedidos" style="width:16px;height:16px;accent-color:var(--dark)"/>
+        Acepto pedidos anticipados (reservas)
+      </label>
+    </div>
+    <div class="step-nav">
+      <span></span>
+      <button class="btn-solid" onclick="goStep(2)">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Horario -->
+  <div class="step-card" id="pane2" style="display:none">
+    <div class="step-card-title">📅 Horario semanal</div>
+    <div class="step-card-sub">¿Cuándo estás disponible?</div>
+    <div class="horario-grid" id="horarioGrid"></div>
+    <div class="step-nav">
+      <button class="btn-outline" onclick="goStep(1)">← Atrás</button>
+      <button class="btn-solid"   onclick="goStep(3)">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Menú y galería -->
+  <div class="step-card" id="pane3" style="display:none">
+    <div class="step-card-title">🍽️ Menú y galería</div>
+    <div class="step-card-sub">Agrega tus productos o servicios</div>
+
+    <div class="form-label" style="margin-bottom:10px">Productos / servicios</div>
+    <div class="menu-list" id="menuList"></div>
+    <div class="menu-add-form">
+      <input class="form-input" id="mNombre" placeholder="Nombre del producto"/>
+      <input class="form-input" id="mPrecio" type="number" placeholder="$Precio"/>
+    </div>
+    <div class="menu-desc-row">
+      <input class="form-input" id="mDesc" placeholder="Descripción breve (opcional)"/>
+    </div>
+    <button class="btn-outline btn-sm" onclick="addMenuItem()">+ Agregar producto</button>
+
+    <hr style="border:none;border-top:1.5px solid var(--border);margin:24px 0"/>
+
+    <div class="form-label" style="margin-bottom:10px">Fotos del negocio (URLs)</div>
+    <div id="galeria-list"></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input class="form-input" id="gUrl" placeholder="https://... (URL de imagen)"/>
+      <button class="btn-outline btn-sm" onclick="addGaleriaUrl()" style="white-space:nowrap">+ Agregar</button>
+    </div>
+    <div class="form-hint">Puedes agregar URLs de imágenes de tus platillos o local</div>
+
+    <div class="step-nav">
+      <button class="btn-outline" onclick="goStep(2)">← Atrás</button>
+      <button class="btn-solid"   onclick="goStep(4)">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Cuenta -->
+  <div class="step-card" id="pane4" style="display:none">
+    <div class="step-card-title">👤 Cuenta de vendedor</div>
+    <div class="step-card-sub">Crea tu cuenta para gestionar tu negocio</div>
+    <div id="s4LoggedIn" style="display:none">
+      <div class="demo-hint">✅ Ya tienes sesión iniciada. Tu negocio quedará vinculado a tu cuenta.</div>
+    </div>
+    <div id="s4Form">
+      <div class="form-group">
+        <label class="form-label">Nombre completo *</label>
+        <input class="form-input" id="s4Nombre" placeholder="Tu nombre"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Correo electrónico *</label>
+        <input class="form-input" id="s4Email" type="email" placeholder="tu@tec.mx"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña *</label>
+        <input class="form-input" id="s4Pass" type="password" placeholder="Mínimo 4 caracteres"/>
+      </div>
+    </div>
+    <div id="s4Error" class="form-error" style="display:none;margin-bottom:12px"></div>
+    <div style="background:var(--gray-bg);border-radius:12px;padding:16px;margin-bottom:20px">
+      <p style="font-size:.85rem;font-weight:700;color:var(--muted)">🔍 Tu negocio será revisado por nuestro equipo antes de publicarse. Te avisaremos por correo.</p>
+    </div>
+    <div class="step-nav">
+      <button class="btn-outline" onclick="goStep(3)">← Atrás</button>
+      <button class="btn-solid btn-green" onclick="enviarRegistro()">✓ Publicar negocio</button>
+    </div>
+  </div>
+</div>
+
+<script src="marketec.js"></script>
+<script>
+  let currentStep = 1;
+  let menuItems   = [];
+  let galeriaUrls = [];
+
+  const DIAS = ['lun','mar','mie','jue','vie','sab','dom'];
+  const DIAS_L = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+
+  /* ── Horario grid ── */
+  function buildHorario() {
+    document.getElementById('horarioGrid').innerHTML = DIAS.map((d,i) => `
+      <div class="horario-row" id="row-${d}">
+        <span class="horario-dia">${DIAS_L[i]}</span>
+        <input class="form-input" id="hi-${d}" type="time" value="${i<5?'08:00':'09:00'}"/>
+        <input class="form-input" id="hf-${d}" type="time" value="${i<5?'18:00':'14:00'}"/>
+      </div>
+      <div style="margin-bottom:6px;padding-left:4px">
+        <label class="horario-cerrado">
+          <input type="checkbox" id="hc-${d}" ${i>=6?'checked':''} onchange="toggleDia('${d}')"/>
+          Cerrado este día
+        </label>
+      </div>`).join('');
+    DIAS.forEach(d => toggleDia(d));
+  }
+
+  function toggleDia(d) {
+    const c = document.getElementById('hc-' + d).checked;
+    document.getElementById('hi-' + d).disabled = c;
+    document.getElementById('hf-' + d).disabled = c;
+    document.getElementById('row-' + d).style.opacity = c ? '.4' : '1';
+  }
+
+  function getHorario() {
+    const h = {};
+    DIAS.forEach(d => {
+      if (document.getElementById('hc-' + d).checked) { h[d] = 'Cerrado'; return; }
+      const ini = document.getElementById('hi-' + d).value;
+      const fin = document.getElementById('hf-' + d).value;
+      h[d] = `${ini}–${fin}`;
+    });
+    return h;
+  }
+
+  /* ── Menu ── */
+  function renderMenuList() {
+    document.getElementById('menuList').innerHTML = menuItems.length
+      ? menuItems.map((m,i) => `
+          <div class="menu-row">
+            <span class="menu-row-name">${m.nombre}</span>
+            <span class="menu-row-price">$${m.precio}</span>
+            <span style="font-size:.78rem;color:var(--muted);flex:1;padding-left:8px">${m.descripcion||''}</span>
+            <button class="menu-row-del" onclick="removeMenuItem(${i})">✕</button>
+          </div>`).join('')
+      : '<div style="color:var(--muted);font-size:.85rem;font-weight:700;margin-bottom:8px">Aún no hay productos. Agrega al menos uno.</div>';
+  }
+
+  function addMenuItem() {
+    const nombre = document.getElementById('mNombre').value.trim();
+    const precio = parseFloat(document.getElementById('mPrecio').value);
+    const desc   = document.getElementById('mDesc').value.trim();
+    if (!nombre || !precio) { MT.Utils.toast('Escribe nombre y precio', 'error'); return; }
+    menuItems.push({ id: 'm' + Date.now(), nombre, precio, descripcion: desc });
+    document.getElementById('mNombre').value = '';
+    document.getElementById('mPrecio').value = '';
+    document.getElementById('mDesc').value   = '';
+    renderMenuList();
+  }
+
+  function removeMenuItem(i) { menuItems.splice(i, 1); renderMenuList(); }
+
+  /* ── Galería ── */
+  function renderGaleria() {
+    document.getElementById('galeria-list').innerHTML = galeriaUrls.map((u,i) => `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;background:var(--gray-bg);padding:8px 12px;border-radius:8px">
+        <span style="font-size:.82rem;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u}</span>
+        <button style="background:none;border:none;color:var(--red);cursor:pointer" onclick="removeGaleria(${i})">✕</button>
+      </div>`).join('');
+  }
+
+  function addGaleriaUrl() {
+    const url = document.getElementById('gUrl').value.trim();
+    if (!url) return;
+    galeriaUrls.push(url);
+    document.getElementById('gUrl').value = '';
+    renderGaleria();
+  }
+
+  function removeGaleria(i) { galeriaUrls.splice(i, 1); renderGaleria(); }
+
+  /* ── Steps ── */
+  function goStep(n) {
+    if (n > currentStep && !validateStep(currentStep)) return;
+    document.getElementById('pane' + currentStep).style.display = 'none';
+    document.getElementById('step-ind-' + currentStep).classList.remove('active');
+    document.getElementById('step-ind-' + currentStep).classList.add('done');
+    currentStep = n;
+    document.getElementById('pane' + n).style.display = 'block';
+    document.getElementById('step-ind-' + n).classList.add('active');
+    document.getElementById('step-ind-' + n).classList.remove('done');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (n === 2) buildHorario();
+    if (n === 3) renderMenuList();
+    if (n === 4) checkAuth4();
+  }
+
+  function validateStep(n) {
+    if (n === 1) {
+      if (!document.getElementById('s1Nombre').value.trim()) { MT.Utils.toast('Escribe el nombre del negocio', 'error'); return false; }
+      if (!document.getElementById('s1Cat').value)           { MT.Utils.toast('Selecciona una categoría', 'error'); return false; }
+      if (!document.getElementById('s1Tipo').value.trim())   { MT.Utils.toast('Escribe el tipo de negocio', 'error'); return false; }
+      if (!document.getElementById('s1Desc').value.trim())   { MT.Utils.toast('Escribe una descripción', 'error'); return false; }
+      if (!document.getElementById('s1Tel').value.trim())    { MT.Utils.toast('Escribe tu teléfono', 'error'); return false; }
+    }
+    return true;
+  }
+
+  function checkAuth4() {
+    const user = MT.Auth.current();
+    if (user) {
+      document.getElementById('s4LoggedIn').style.display = 'block';
+      document.getElementById('s4Form').style.display = 'none';
+    } else {
+      document.getElementById('s4LoggedIn').style.display = 'none';
+      document.getElementById('s4Form').style.display = 'block';
+    }
+  }
+
+  /* ── Enviar ── */
+  function enviarRegistro() {
+    let user = MT.Auth.current();
+    const err = document.getElementById('s4Error');
+
+    if (!user) {
+      const nombre = document.getElementById('s4Nombre').value.trim();
+      const email  = document.getElementById('s4Email').value.trim();
+      const pass   = document.getElementById('s4Pass').value;
+      if (!nombre || !email || !pass) { err.textContent = 'Completa todos los campos'; err.style.display = 'block'; return; }
+      const result = MT.Auth.register({ nombre, email, password: pass, rol: 'emprendedor', avatar: '👤' });
+      if (result.error) { err.textContent = result.error; err.style.display = 'block'; return; }
+      user = MT.Auth.login(email, pass);
+    }
+
+    const entregas = document.querySelector('input[name="entregas"]:checked')?.value === 'si';
+    const negocio = MT.Negocios.save({
+      nombre:        document.getElementById('s1Nombre').value.trim(),
+      categoria:     document.getElementById('s1Cat').value,
+      tipo:          document.getElementById('s1Tipo').value.trim(),
+      descripcion:   document.getElementById('s1Desc').value.trim(),
+      emoji:         document.getElementById('s1Emoji').value.trim() || '🏪',
+      direccion:     document.getElementById('s1Dir').value.trim(),
+      telefono:      document.getElementById('s1Tel').value.trim(),
+      whatsapp:      '52' + document.getElementById('s1Tel').value.trim(),
+      hace_entregas: entregas,
+      acepta_pedidos:document.getElementById('s1Pedidos').checked,
+      horario:       getHorario(),
+      menu:          menuItems,
+      galeria:       galeriaUrls,
+      calificacion:  0, total_resenas: 0,
+      disponible:    false, estado: 'pendiente',
+      dueno_id:      user.id,
+      slug:          MT.Utils.slug(document.getElementById('s1Nombre').value.trim()),
+    });
+
+    MT.Auth.updateUser(user.id, { negocio_id: negocio.id, rol: 'emprendedor' });
+
+    MT.Utils.toast('¡Negocio enviado para revisión!');
+    setTimeout(() => window.location.href = 'dashboard.html', 1200);
+  }
+
+  renderMenuList();
+</script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MarkeTec — Admin</title>
+  <link rel="stylesheet" href="marketec.css"/>
+  <style>
+    body { display:flex; flex-direction:column; min-height:100vh; }
+    .admin-layout { flex:1; display:flex; }
+
+    /* Sidebar */
+    .admin-nav { width:220px; background:var(--dark); flex-shrink:0; padding:28px 0; }
+    .admin-nav-logo { font-family:'Fredoka One',cursive; font-size:1.3rem; color:white; padding:0 22px 24px; border-bottom:1px solid rgba(255,255,255,.1); margin-bottom:16px; }
+    .admin-nav-logo span { opacity:.5; font-family:'Nunito',sans-serif; font-size:.75rem; font-weight:700; display:block; margin-top:2px; }
+    .admin-nav-item { display:flex; align-items:center; gap:10px; padding:12px 22px; color:rgba(255,255,255,.65); font-weight:700; font-size:.88rem; cursor:pointer; transition:all .18s; }
+    .admin-nav-item:hover { color:white; background:rgba(255,255,255,.08); }
+    .admin-nav-item.active { color:white; background:rgba(255,255,255,.12); border-right:3px solid var(--yellow); }
+    .admin-nav-badge { background:var(--red); color:white; font-size:.7rem; font-weight:800; padding:1px 7px; border-radius:20px; margin-left:auto; }
+
+    /* Main */
+    .admin-main { flex:1; padding:32px; overflow-x:auto; }
+    .admin-view { display:none; }
+    .admin-view.active { display:block; }
+    .admin-title { font-family:'Fredoka One',cursive; font-size:1.8rem; color:var(--dark); margin-bottom:24px; }
+
+    /* Stats */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+    .stat-card { background:var(--white); border-radius:14px; padding:20px; border:1.5px solid var(--border); box-shadow:var(--shadow); }
+    .stat-num { font-family:'Fredoka One',cursive; font-size:2.2rem; color:var(--dark); }
+    .stat-lbl { font-size:.8rem; font-weight:700; color:var(--muted); margin-top:4px; }
+    .stat-delta { font-size:.8rem; font-weight:700; margin-top:6px; }
+
+    /* Pendientes */
+    .pendiente-card { background:var(--white); border-radius:16px; padding:22px; border:1.5px solid var(--border); box-shadow:var(--shadow); margin-bottom:14px; display:flex; align-items:flex-start; gap:16px; }
+    .pend-emoji { font-size:2.5rem; flex-shrink:0; }
+    .pend-info  { flex:1; }
+    .pend-name  { font-weight:800; font-size:1rem; margin-bottom:4px; }
+    .pend-meta  { font-size:.83rem; color:var(--muted); font-weight:600; margin-bottom:8px; }
+    .pend-desc  { font-size:.85rem; color:var(--text); line-height:1.5; margin-bottom:12px; }
+    .pend-actions { display:flex; gap:8px; flex-wrap:wrap; }
+
+    @media(max-width:900px) {
+      .admin-nav { display:none; }
+      .stats-row { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <img src="marketec logo 1.png" class="logo-icon" alt="" onerror="this.style.display='none'">
+    <span class="logo-text">MARKETEC</span>
+  </a>
+  <ul class="nav-links"><li><a href="index.html">Ver sitio</a></li></ul>
+  <div class="nav-actions"></div>
+</nav>
+
+<div class="admin-layout">
+  <!-- SIDEBAR NAV -->
+  <aside class="admin-nav">
+    <div class="admin-nav-logo">MARKETEC<span>Panel Admin</span></div>
+    <div class="admin-nav-item active" onclick="showView('dashboard')">📊 Dashboard</div>
+    <div class="admin-nav-item" onclick="showView('pendientes')" id="navPend">
+      ⏳ Pendientes
+      <span class="admin-nav-badge" id="pendBadge">0</span>
+    </div>
+    <div class="admin-nav-item" onclick="showView('negocios')">🏪 Negocios</div>
+    <div class="admin-nav-item" onclick="showView('usuarios')">👥 Usuarios</div>
+    <div class="admin-nav-item" onclick="showView('resenas')">⭐ Reseñas</div>
+    <div class="admin-nav-item" onclick="showView('pedidos')">📋 Pedidos</div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="admin-main">
+
+    <!-- DASHBOARD -->
+    <div class="admin-view active" id="view-dashboard">
+      <div class="admin-title">📊 Dashboard</div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="dNegocios">—</div><div class="stat-lbl">Negocios aprobados</div></div>
+        <div class="stat-card"><div class="stat-num" id="dPendientes">—</div><div class="stat-lbl">En revisión</div></div>
+        <div class="stat-card"><div class="stat-num" id="dUsuarios">—</div><div class="stat-lbl">Usuarios registrados</div></div>
+        <div class="stat-card"><div class="stat-num" id="dResenas">—</div><div class="stat-lbl">Reseñas totales</div></div>
+      </div>
+
+      <!-- Pendientes rápidos -->
+      <div class="section-title">⏳ Nuevas solicitudes</div>
+      <div id="quickPendientes"></div>
+    </div>
+
+    <!-- PENDIENTES -->
+    <div class="admin-view" id="view-pendientes">
+      <div class="admin-title">⏳ Negocios pendientes de revisión</div>
+      <div id="pendientesList"></div>
+    </div>
+
+    <!-- NEGOCIOS -->
+    <div class="admin-view" id="view-negocios">
+      <div class="admin-title">🏪 Todos los negocios</div>
+      <div class="card">
+        <div class="card-body" style="padding:0;overflow-x:auto">
+          <table class="mt-table" id="negociosTable">
+            <thead><tr>
+              <th>Negocio</th><th>Categoría</th><th>Estado</th>
+              <th>Calificación</th><th>Disponible</th><th>Acciones</th>
+            </tr></thead>
+            <tbody id="negociosTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- USUARIOS -->
+    <div class="admin-view" id="view-usuarios">
+      <div class="admin-title">👥 Usuarios</div>
+      <div class="card">
+        <div class="card-body" style="padding:0;overflow-x:auto">
+          <table class="mt-table">
+            <thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Fecha</th><th>Acciones</th></tr></thead>
+            <tbody id="usuariosTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESEÑAS -->
+    <div class="admin-view" id="view-resenas">
+      <div class="admin-title">⭐ Reseñas</div>
+      <div id="resenasList"></div>
+    </div>
+
+    <!-- PEDIDOS -->
+    <div class="admin-view" id="view-pedidos">
+      <div class="admin-title">📋 Pedidos</div>
+      <div class="card">
+        <div class="card-body" style="padding:0;overflow-x:auto">
+          <table class="mt-table">
+            <thead><tr><th>#</th><th>Negocio</th><th>Items</th><th>Total</th><th>Estado</th><th>Fecha</th></tr></thead>
+            <tbody id="pedidosTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="marketec.js"></script>
+<script>
+  // Guard
+  const user = MT.Auth.current();
+  if (!user || user.rol !== 'admin') window.location.href = 'auth.html';
+
+  function showView(v) {
+    document.querySelectorAll('.admin-view').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.remove('active'));
+    document.getElementById('view-' + v).classList.add('active');
+    // Find nav item
+    document.querySelectorAll('.admin-nav-item').forEach(el => {
+      if (el.getAttribute('onclick') && el.getAttribute('onclick').includes(v)) el.classList.add('active');
+    });
+    if (v === 'pendientes') renderPendientes();
+    else if (v === 'negocios') renderNegocios();
+    else if (v === 'usuarios') renderUsuarios();
+    else if (v === 'resenas')  renderResenas();
+    else if (v === 'pedidos')  renderPedidos();
+    else renderDashboard();
+  }
+
+  function renderDashboard() {
+    const negs  = MT.Negocios.getAll();
+    const pends = negs.filter(n => n.estado === 'pendiente');
+    const users = MT.Usuarios.getAll();
+    const res   = MT.Resenas.getAll();
+
+    document.getElementById('dNegocios').textContent   = negs.filter(n=>n.estado==='aprobado').length;
+    document.getElementById('dPendientes').textContent = pends.length;
+    document.getElementById('dUsuarios').textContent   = users.length;
+    document.getElementById('dResenas').textContent    = res.length;
+    document.getElementById('pendBadge').textContent   = pends.length;
+
+    const el = document.getElementById('quickPendientes');
+    if (!pends.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><p>No hay solicitudes pendientes</p></div>'; return; }
+    el.innerHTML = pends.map(n => pendCard(n)).join('');
+  }
+
+  function pendCard(n) {
+    return `
+      <div class="pendiente-card">
+        <div class="pend-emoji">${n.emoji}</div>
+        <div class="pend-info">
+          <div class="pend-name">${n.nombre}</div>
+          <div class="pend-meta">${n.tipo} · ${n.categoria} · ${n.fecha_registro||''}</div>
+          <div class="pend-desc">${n.descripcion}</div>
+          <div style="font-size:.82rem;color:var(--muted);margin-bottom:10px">📍 ${n.direccion} · 📞 ${n.telefono}</div>
+          <div class="pend-actions">
+            <button class="btn-solid btn-green btn-sm" onclick="aprobar(${n.id})">✓ Aprobar</button>
+            <button class="btn-solid btn-red btn-sm" onclick="rechazar(${n.id})">✕ Rechazar</button>
+            <a href="negocio.html?id=${n.id}" class="btn-outline btn-sm" style="text-decoration:none" target="_blank">👁️ Ver</a>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderPendientes() {
+    const pends = MT.Negocios.getPendientes();
+    document.getElementById('pendientesList').innerHTML = pends.length
+      ? pends.map(n => pendCard(n)).join('')
+      : '<div class="empty-state"><div class="empty-icon">✅</div><p>No hay solicitudes pendientes</p></div>';
+  }
+
+  function aprobar(id) {
+    MT.Negocios.aprobar(id);
+    MT.Utils.toast('Negocio aprobado ✓');
+    renderDashboard();
+    renderPendientes();
+    document.getElementById('pendBadge').textContent = MT.Negocios.getPendientes().length;
+  }
+
+  function rechazar(id) {
+    if (!confirm('¿Rechazar este negocio?')) return;
+    MT.Negocios.rechazar(id);
+    MT.Utils.toast('Negocio rechazado', 'error');
+    renderDashboard();
+    renderPendientes();
+    document.getElementById('pendBadge').textContent = MT.Negocios.getPendientes().length;
+  }
+
+  function renderNegocios() {
+    const negs = MT.Negocios.getAll();
+    const estadoClass = { aprobado:'badge-green', pendiente:'badge-yellow', rechazado:'badge-red' };
+    document.getElementById('negociosTbody').innerHTML = negs.map(n => `
+      <tr>
+        <td><strong>${n.emoji} ${n.nombre}</strong><br><span style="font-size:.78rem;color:var(--muted)">${n.tipo}</span></td>
+        <td>${n.categoria}</td>
+        <td><span class="badge ${estadoClass[n.estado]||'badge-gray'}">${n.estado}</span></td>
+        <td>⭐ ${n.calificacion} (${n.total_resenas})</td>
+        <td><span class="badge ${n.disponible?'badge-green':'badge-gray'}">${n.disponible?'Sí':'No'}</span></td>
+        <td style="display:flex;gap:6px;flex-wrap:wrap">
+          ${n.estado!=='aprobado' ? `<button class="btn-outline btn-sm" onclick="aprobar(${n.id})">✓ Aprobar</button>` : ''}
+          <a href="negocio.html?id=${n.id}" class="btn-outline btn-sm" style="text-decoration:none" target="_blank">👁️ Ver</a>
+          <button class="btn-solid btn-red btn-sm" onclick="eliminarNeg(${n.id})">🗑️</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  function eliminarNeg(id) {
+    if (!confirm('¿Eliminar este negocio? Esta acción es irreversible.')) return;
+    MT.Negocios.eliminar(id);
+    renderNegocios();
+    MT.Utils.toast('Negocio eliminado', 'error');
+  }
+
+  function renderUsuarios() {
+    const users = MT.Usuarios.getAll();
+    const rolBadge = { admin:'badge-red', emprendedor:'badge-yellow', cliente:'badge-gray' };
+    document.getElementById('usuariosTbody').innerHTML = users.map(u => `
+      <tr>
+        <td><strong>${u.avatar||'👤'} ${u.nombre}</strong></td>
+        <td>${u.email}</td>
+        <td><span class="badge ${rolBadge[u.rol]||'badge-gray'}">${u.rol}</span></td>
+        <td>${u.fecha||''}</td>
+        <td>${u.rol !== 'admin' ? `<button class="btn-solid btn-red btn-sm" onclick="eliminarUser(${u.id})">🗑️ Eliminar</button>` : '—'}</td>
+      </tr>`).join('');
+  }
+
+  function eliminarUser(id) {
+    if (!confirm('¿Eliminar este usuario?')) return;
+    MT.Usuarios.eliminar(id);
+    renderUsuarios();
+    MT.Utils.toast('Usuario eliminado', 'error');
+  }
+
+  function renderResenas() {
+    const res  = MT.Resenas.getAll();
+    const negs = MT.Negocios.getAll();
+    document.getElementById('resenasList').innerHTML = res.length
+      ? res.slice().reverse().map(r => {
+          const n = negs.find(x => x.id === r.negocio_id);
+          return `
+            <div class="card" style="margin-bottom:10px">
+              <div class="card-body" style="padding:14px 18px;display:flex;align-items:flex-start;gap:12px">
+                <div style="flex:1">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                    <strong style="font-size:.9rem">${r.usuario}</strong>
+                    <span style="color:var(--muted);font-size:.78rem">${r.fecha}</span>
+                  </div>
+                  <div style="color:var(--yellow);margin-bottom:4px">${'★'.repeat(r.calificacion)}${'☆'.repeat(5-r.calificacion)}</div>
+                  <p style="font-size:.87rem;color:var(--muted)">${r.comentario}</p>
+                  <p style="font-size:.78rem;color:var(--muted);margin-top:6px">Negocio: <strong>${n?n.nombre:'—'}</strong></p>
+                </div>
+                <button class="btn-solid btn-red btn-sm" onclick="eliminarResena(${r.id})">🗑️</button>
+              </div>
+            </div>`;
+        }).join('')
+      : '<div class="empty-state"><div class="empty-icon">⭐</div><p>Sin reseñas aún</p></div>';
+  }
+
+  function eliminarResena(id) {
+    if (!confirm('¿Eliminar esta reseña?')) return;
+    MT.Resenas.eliminar(id);
+    renderResenas();
+    MT.Utils.toast('Reseña eliminada', 'error');
+  }
+
+  function renderPedidos() {
+    const pedidos = MT.Pedidos.getAll();
+    const negs    = MT.Negocios.getAll();
+    document.getElementById('pedidosTbody').innerHTML = pedidos.length
+      ? pedidos.slice().reverse().map(p => {
+          const n = negs.find(x => x.id === p.negocio_id);
+          return `<tr>
+            <td>#${p.id}</td>
+            <td>${n ? n.nombre : '—'}</td>
+            <td style="font-size:.82rem">${(p.items||[]).map(i=>i.nombre+'×'+i.cantidad).join(', ')}</td>
+            <td><strong>$${p.total}</strong></td>
+            <td><span class="badge ${p.estado==='pendiente'?'badge-yellow':'badge-green'}">${p.estado}</span></td>
+            <td style="font-size:.82rem;color:var(--muted)">${new Date(p.fecha).toLocaleDateString('es-MX')}</td>
+          </tr>`;
+        }).join('')
+      : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px;font-weight:700">Sin pedidos aún</td></tr>';
+  }
+
+  // Init
+  renderDashboard();
+</script>
+</body>
+</html>

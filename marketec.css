@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red:     #e63030;
+  --yellow:  #f5c518;
+  --green:   #2dba5e;
+  --dark:    #1a1a2e;
+  --gray-bg: #f5f5f7;
+  --white:   #ffffff;
+  --border:  #e0e0e0;
+  --text:    #222;
+  --muted:   #888;
+  --accent:  #ff6b35;
+  --shadow:        0 2px 12px rgba(0,0,0,0.09);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.14);
+}
+
+body { font-family:'Nunito',sans-serif; background:var(--gray-bg); color:var(--text); min-height:100vh; }
+
+/* ── NAVBAR ── */
+nav {
+  background:var(--white); border-bottom:2px solid var(--border);
+  padding:0 32px; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:200;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+.logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+.logo-icon { width:50px; height:50px; object-fit:contain; }
+.logo-text {
+  font-family:'Fredoka One',cursive; font-size:1.5rem; letter-spacing:1px;
+  background:linear-gradient(135deg,var(--red),var(--yellow),var(--green));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.nav-links { display:flex; align-items:center; gap:28px; list-style:none; }
+.nav-links a { text-decoration:none; color:var(--text); font-weight:700; font-size:.92rem; transition:color .2s; }
+.nav-links a:hover { color:var(--red); }
+.nav-actions { display:flex; align-items:center; gap:10px; }
+
+/* ── BUTTONS ── */
+.btn-outline {
+  border:2px solid var(--dark); background:transparent; color:var(--dark);
+  padding:7px 18px; border-radius:8px;
+  font-family:'Nunito',sans-serif; font-weight:700; font-size:.88rem;
+  cursor:pointer; transition:all .18s;
+}
+.btn-outline:hover { background:var(--dark); color:white; }
+.btn-solid {
+  border:2px solid var(--dark); background:var(--dark); color:white;
+  padding:7px 18px; border-radius:8px;
+  font-family:'Nunito',sans-serif; font-weight:700; font-size:.88rem;
+  cursor:pointer; transition:all .18s;
+}
+.btn-solid:hover { background:#333; }
+.btn-red    { background:var(--red)!important;   border-color:var(--red)!important;   color:white!important; }
+.btn-green  { background:var(--green)!important; border-color:var(--green)!important; color:white!important; }
+.btn-yellow { background:var(--yellow)!important;border-color:var(--yellow)!important;color:var(--dark)!important; }
+.btn-sm     { padding:5px 12px!important; font-size:.8rem!important; }
+
+/* ── BADGES ── */
+.badge {
+  display:inline-block; font-size:.72rem; font-weight:800; padding:3px 10px;
+  border-radius:20px; text-transform:uppercase; letter-spacing:.5px;
+}
+.badge-green  { background:var(--green);  color:white; }
+.badge-red    { background:var(--red);    color:white; }
+.badge-yellow { background:var(--yellow); color:var(--dark); }
+.badge-gray   { background:#eee;          color:var(--muted); }
+
+/* ── CARDS ── */
+.card {
+  background:var(--white); border-radius:16px; border:1.5px solid var(--border);
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.card-body { padding:20px 22px; }
+.card-title { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--dark); margin-bottom:6px; }
+
+/* ── FORM ── */
+.form-group { margin-bottom:16px; }
+.form-label { display:block; font-weight:800; font-size:.85rem; margin-bottom:6px; }
+.form-input, .form-select, .form-textarea {
+  width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:10px;
+  font-family:'Nunito',sans-serif; font-size:.9rem; outline:none; transition:border .2s;
+  background:var(--white); color:var(--text);
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color:#999; }
+.form-textarea { resize:vertical; min-height:80px; }
+.form-hint { font-size:.77rem; color:var(--muted); margin-top:4px; }
+.form-error { font-size:.78rem; color:var(--red); margin-top:4px; font-weight:700; }
+
+/* ── FOOTER ── */
+footer {
+  background:var(--white); border-top:2px solid var(--border);
+  padding:48px 64px 36px;
+}
+.footer-inner { max-width:1400px; margin:0 auto; display:flex; gap:64px; align-items:flex-start; }
+.footer-brand { flex-shrink:0; }
+.footer-logo-text {
+  font-family:'Fredoka One',cursive; font-size:1.6rem;
+  background:linear-gradient(135deg,var(--red),var(--yellow),var(--green));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.social-icons { display:flex; gap:14px; margin-top:16px; }
+.social-icons a { width:32px; height:32px; display:flex; align-items:center; justify-content:center; color:var(--text); font-size:1.1rem; transition:color .2s; text-decoration:none; }
+.social-icons a:hover { color:var(--red); }
+.footer-cols { display:flex; gap:64px; flex:1; }
+.footer-col h4 { font-weight:800; font-size:.9rem; margin-bottom:16px; }
+.footer-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.footer-col ul li a { text-decoration:none; color:var(--muted); font-size:.85rem; font-weight:600; transition:color .18s; }
+.footer-col ul li a:hover { color:var(--text); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:500;
+  display:flex; align-items:center; justify-content:center; padding:20px;
+  opacity:0; pointer-events:none; transition:opacity .25s;
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-box {
+  background:var(--white); border-radius:20px; padding:36px;
+  max-width:520px; width:100%; box-shadow:var(--shadow-lg);
+  transform:translateY(20px); transition:transform .25s;
+}
+.modal-overlay.open .modal-box { transform:translateY(0); }
+.modal-title { font-family:'Fredoka One',cursive; font-size:1.4rem; color:var(--dark); margin-bottom:20px; }
+.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; }
+
+/* ── STARS ── */
+.stars { color:var(--yellow); font-size:1rem; letter-spacing:1px; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(18px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.fadeup { animation:fadeUp .4s ease both; }
+
+/* ── TABS ── */
+.tabs { display:flex; gap:4px; border-bottom:2px solid var(--border); margin-bottom:24px; }
+.tab-btn {
+  padding:10px 20px; border:none; background:none; cursor:pointer;
+  font-family:'Nunito',sans-serif; font-weight:700; font-size:.9rem;
+  color:var(--muted); border-bottom:3px solid transparent; margin-bottom:-2px;
+  transition:all .18s;
+}
+.tab-btn.active { color:var(--dark); border-bottom-color:var(--dark); }
+.tab-pane { display:none; }
+.tab-pane.active { display:block; }
+
+/* ── SECTION TITLE ── */
+.section-title { font-family:'Fredoka One',cursive; font-size:1.4rem; color:var(--dark); margin-bottom:18px; }
+
+/* ── EMPTY STATE ── */
+.empty-state { text-align:center; padding:60px 20px; color:var(--muted); }
+.empty-state .empty-icon { font-size:3rem; margin-bottom:12px; }
+.empty-state p { font-weight:700; font-size:.95rem; }
+
+/* ── TABLE ── */
+.mt-table { width:100%; border-collapse:collapse; font-size:.88rem; }
+.mt-table th { background:var(--gray-bg); font-weight:800; font-size:.8rem; text-transform:uppercase; letter-spacing:.5px; padding:10px 14px; text-align:left; }
+.mt-table td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.mt-table tr:last-child td { border-bottom:none; }
+.mt-table tr:hover td { background:#fafafa; }
+
+/* ── CATEGORY CHIPS ── */
+.cat-chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+.cat-chip {
+  padding:6px 16px; border-radius:20px; border:1.5px solid var(--border);
+  background:var(--white); font-family:'Nunito',sans-serif; font-weight:700; font-size:.82rem;
+  cursor:pointer; transition:all .18s; color:var(--text);
+}
+.cat-chip:hover { border-color:#999; }
+.cat-chip.active { background:var(--dark); color:white; border-color:var(--dark); }
+
+/* ── WHATSAPP BTN ── */
+.btn-whatsapp {
+  display:inline-flex; align-items:center; gap:8px;
+  background:#25d366; color:white; padding:11px 20px; border-radius:10px;
+  font-family:'Nunito',sans-serif; font-weight:800; font-size:.9rem;
+  text-decoration:none; border:none; cursor:pointer;
+  transition:background .18s, transform .15s;
+}
+.btn-whatsapp:hover { background:#1ebe5d; transform:translateY(-2px); }
